@@ -1,0 +1,9 @@
+PROGRAM tester2
+
+DECLARE
+
+	STRING str
+	
+BEGIN
+	PRINT "Hello World"
+END	

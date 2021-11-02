@@ -1,0 +1,12 @@
+PROGRAM tester1
+
+DECLARE
+	INTEGER x
+	INTEGER y
+	INTEGER z
+	
+BEGIN
+
+	PRINT "Hello World"
+
+END	
