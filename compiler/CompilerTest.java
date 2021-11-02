@@ -24,6 +24,7 @@ public class CompilerTest{
         CommonTokenStream tokens;
         KnightCodeParser parser;
 
+	int a;// this is a change to make sure I made the branch correctly
 	String file;
 	if(args.length == 0)
 		file = "Program1.kc";
