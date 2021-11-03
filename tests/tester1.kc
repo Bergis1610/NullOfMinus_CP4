@@ -4,9 +4,15 @@ DECLARE
 	INTEGER x
 	INTEGER y
 	INTEGER z
+	INTEGER f
 	
 BEGIN
 
-	PRINT "Hello World"
+	SET x := 10
+	SET y := 12
+	SET f := 1
+	SET z := x + y + f
+
+	PRINT z
 
 END	

@@ -1,0 +1,12 @@
+PROGRAM tester3
+
+DECLARE
+	INTEGER x
+	
+BEGIN
+
+	SET x := 10
+
+	PRINT x
+
+END	

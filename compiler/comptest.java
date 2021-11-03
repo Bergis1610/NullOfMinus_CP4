@@ -39,12 +39,12 @@ public class comptest{
             parser = new KnightCodeParser(tokens); //create the parser
         
        
-            ParseTree tree = parser.file();  //set the start location of the parser
-            //Trees.inspect(tree, parser);
+            //set the start location of the parser
+            ParseTree tree = parser.file(); 
             
-            //System.out.println(tree.toStringTree(parser));
             
-            myListener2 listener = new myListener2("output1");
+            //Walk the tree using the myListener2 class
+            myListener2 listener = new myListener2("output/output1");
 	    ParseTreeWalker walker = new ParseTreeWalker();
 	    walker.walk(listener, tree);
             
@@ -57,6 +57,14 @@ public class comptest{
 
     }
 
+//Scratch
+/*
+
+Trees.inspect(tree, parser);
+            
+System.out.println(tree.toStringTree(parser));
+
+*/
 
 
 

@@ -27,6 +27,7 @@ public class variable{
 	public String variableType;
 	public Object value;
 
+
 	public variable(String variableType, Object value){
 		this.variableType = variableType;
 		this.value = value;
@@ -40,7 +41,33 @@ public class variable{
 
 
 }
-
+	public HashMap<String, variable> SymbolTable = new HashMap<String, variable>();
+	public String INT = "INTEGER";
+	public String STR = "STRING";
+	
+	
+	public int count;
+	public String outputString;
+	public int outputInt;
+	public String key;
+	public String key2;
+	public variable currvar;
+	public variable extravar;
+	
+	public int num;
+	public String id;
+	
+	public int genInt;
+	public String genString;
+	public int op1;
+	public int op2;
+	public boolean isInteger;
+	public boolean operationDone;
+	public boolean expre;
+	//public boolean changeVar;
+	
+	
+	
 	public void printHashMap(HashMap<String,variable> map){
 	
 		Object[]keys = map.keySet().toArray();
@@ -57,19 +84,6 @@ public class variable{
 		} 	
 		
 	}
-
-
-	
-	public int count;
-	public HashMap<String, variable> SymbolTable = new HashMap<String, variable>();
-	
-	public String integ = "INTEGER";
-	public String str = "STRING";
-	
-	
-	
-	
-	
 	
 //End general stuff	
 	
@@ -96,7 +110,7 @@ public class variable{
 		
 		//Set up the classwriter
 		cw = new ClassWriter(ClassWriter.COMPUTE_FRAMES);
-        	cw.visit(Opcodes.V11, Opcodes.ACC_PUBLIC,"output/"+this.programName, null, "java/lang/Object",null);
+        	cw.visit(Opcodes.V11, Opcodes.ACC_PUBLIC,this.programName, null, "java/lang/Object",null);
 	
 		//Use local MethodVisitor to create the constructor for the object
 		MethodVisitor mv=cw.visitMethod(Opcodes.ACC_PUBLIC, "<init>", "()V", null, null);
@@ -125,7 +139,7 @@ public class variable{
 
 
 
-        	Utilities.writeFile(b,"output/"+this.programName+".class");
+        	Utilities.writeFile(b,this.programName+".class");
         
         	System.out.println("Done!");
 
@@ -159,7 +173,9 @@ public class variable{
 
 	@Override 
 	public void enterDeclare(KnightCodeParser.DeclareContext ctx){
-		//count = ctx.getChildCount();
+		System.out.println("Enter declare");
+		
+		count = ctx.getChildCount();
 		/*
 		int i = 1;
 		while(i < count){
@@ -172,12 +188,14 @@ public class variable{
 	@Override 
 	public void exitDeclare(KnightCodeParser.DeclareContext ctx){
 		printHashMap(SymbolTable);
+		
+		System.out.println("Exit declare");
 	}
-
-	
 
 	@Override 
 	public void enterVariable(KnightCodeParser.VariableContext ctx){
+		
+		System.out.println("Enter variable");
 		
 		variable var = new variable();
 		
@@ -195,7 +213,7 @@ public class variable{
 		
 		SymbolTable.put(identifier, var);
 		/*
-		if(vartype.equals(integ){
+		if(vartype.equals(INT){
 			
 			
 		}else{
@@ -209,7 +227,7 @@ public class variable{
 	@Override 
 	public void exitVariable(KnightCodeParser.VariableContext ctx){ 
 	
-		
+		System.out.println("Exit variable");
 	}
 	
 	@Override 
@@ -222,6 +240,143 @@ public class variable{
 	
 	}
 	
+	
+	
+	
+	@Override 
+	public void enterBody(KnightCodeParser.BodyContext ctx){ 
+		System.out.println("Enter body!");
+		
+		count = ctx.getChildCount();
+		//System.out.println("Count: " + count);
+		
+		
+	}
+	@Override 
+	public void exitBody(KnightCodeParser.BodyContext ctx){ 
+		
+		
+		printHashMap(SymbolTable);
+		
+		System.out.println("Exit body!");
+	}
+	
+	@Override 
+	public void enterSetvar(KnightCodeParser.SetvarContext ctx){ 
+		System.out.println("Enter setvar");
+		if(ctx.getChild(1) != null)
+			key = ctx.getChild(1).getText();
+			
+		currvar = SymbolTable.get(key);	
+			
+			
+			
+	}
+	
+	@Override 
+	public void exitSetvar(KnightCodeParser.SetvarContext ctx){ 
+	
+	
+		if(operationDone)
+			currvar.value = genInt;
+	
+	
+	
+		SymbolTable.put(key, currvar);	
+		expre = false;
+		
+		
+		
+		System.out.println("Exit setvar");
+	}
+	@Override 
+	public void enterNumber(KnightCodeParser.NumberContext ctx){ 
+		System.out.println("Enter Number");
+		num = Integer.valueOf(ctx.NUMBER().getText());
+		currvar.value = (int)num;
+		
+		
+		//Test 			WORKS!
+		//System.out.println("num = " + num);
+		
+	}
+	
+	@Override 
+	public void exitNumber(KnightCodeParser.NumberContext ctx){ 
+	
+	
+		System.out.println("Exit Number");
+	}
+	
+	
+	@Override 
+	public void enterId(KnightCodeParser.IdContext ctx){ 
+		System.out.println("enter ID");
+		
+		/*
+		key2 = ctx.getText();
+		extravar = SymbolTable.get(key);
+		*/
+		
+	}
+	@Override 
+	public void exitId(KnightCodeParser.IdContext ctx){ 
+	
+	
+	
+		/*
+		genString = extravar.variableType;
+		
+		
+		if(extravar.value != null){
+		
+			System.out.println("val is not null");
+			if(genString.equals(INT)){
+			
+				isInteger = true;
+			
+				//		    \
+				//Error right here  V
+			
+				outputInt = (int)extravar.value;
+				
+				//System.out.println("About to exit ID");
+			
+			} else{
+				//System.out.println("About to exit ID");
+				outputString = String.valueOf(extravar.value);
+					
+			}
+		}
+		*/
+	
+	
+		System.out.println("Exit ID");
+	}
+	
+	
+	
+	
+	@Override 
+	public void enterAddition(KnightCodeParser.AdditionContext ctx){ 
+		System.out.println("Enter addition");
+		
+		op1 = (int)SymbolTable.get(ctx.getChild(0).getText()).value;
+		op2 = (int)SymbolTable.get(ctx.getChild(2).getText()).value;
+		
+	}
+	
+	@Override 
+	public void exitAddition(KnightCodeParser.AdditionContext ctx){ 
+	
+		genInt = op1 + op2;
+		operationDone = true;
+	
+		System.out.println("Exit addition");
+	}
+	
+	
+	
 
 
 	/**
@@ -231,8 +386,6 @@ public class variable{
 	private void printContext(String ctx){
 		System.out.println(ctx);
 	}
-
-
 	@Override 
 	public void enterEveryRule(ParserRuleContext ctx){
 	 	if(debug) 
@@ -241,41 +394,67 @@ public class variable{
 
 
 
-	@Override 
-	public void enterBody(KnightCodeParser.BodyContext ctx){ 
 	
-		
-	}
-	@Override 
-	public void exitBody(KnightCodeParser.BodyContext ctx){ 
-	
-		
-	}
 	
 
 
-/*
+
 	@Override
 	public void enterPrint(KnightCodeParser.PrintContext ctx){
+		System.out.println("Enter print");
+		
 
-		String output = ctx.getChild(1).getText();
+		key2 = ctx.getChild(1).getText();
+
+		if(SymbolTable.containsKey(key2)){
+		
+			extravar = SymbolTable.get(key2);
+			if(extravar.variableType.equals(INT)){
+				outputInt = (int)extravar.value;
+				isInteger = true;
+			} else {
+				outputString = String.valueOf(extravar.value);
+				isInteger = false;
+			}
+			
+		
+		} else {
+			outputString = key2; 
+		}
 		
 		//String output = ctx.getText();
 		
 		
-		mainVisitor.visitFieldInsn(Opcodes.GETSTATIC, "java/lang/System", "out", "Ljava/io/PrintStream;");
-		mainVisitor.visitLdcInsn(output);
-		mainVisitor.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/io/PrintStream",  "println", "(Ljava/lang/String;)V", false);
+		
 
 	}//end enterWrite_stmt
 
 	@Override 
 	public void exitPrint(KnightCodeParser.PrintContext ctx){ 
 	
+		if(!isInteger){
 		
+			System.out.println("\nString will be printed to bytecode file\n");
+			mainVisitor.visitFieldInsn(Opcodes.GETSTATIC, "java/lang/System", "out", "Ljava/io/PrintStream;");
+			mainVisitor.visitLdcInsn(outputString);
+			mainVisitor.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/io/PrintStream",  "println", "(Ljava/lang/String;)V", false);
+		} else {
+			System.out.println("\nInt will be printed to bytecode file\n");
+			mainVisitor.visitFieldInsn(Opcodes.GETSTATIC,"java/lang/System", "out", "Ljava/io/PrintStream;");
+			//mainVisitor.visitVarInsn(outputInt);
+			mainVisitor.visitIntInsn(Opcodes.BIPUSH, outputInt);
+			mainVisitor.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/io/PrintStream", "println", "(I)V", false);
+		
+		}
+		
+		isInteger = false;
+		
+		
+		
+		System.out.println("Exit print");
 	}
 	
-*/
+
 	
 
 
