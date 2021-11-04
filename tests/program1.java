@@ -4,7 +4,7 @@ public class program1{
 
 	public static void main(String[]args){
 	
-		int x = 10;
+		int x = 1010;
 		int y = 12;
 		int z = x+y;
 		
@@ -16,15 +16,21 @@ public class program1{
 	
 /**	ASM byte code section
  
+ 	//x
  		mv.visitIntInsn(BIPUSH, 10);
             	mv.visitVarInsn(ISTORE,1);
+            	
+        //y    	
 		mv.visitIntInsn(BIPUSH, 12);
 		mv.visitVarInsn(ISTORE,2);
+	
+	//z = x + y	   	
            	mv.visitVarInsn(ILOAD,1);
             	mv.visitVarInsn(ILOAD,2);
 		mv.visitInsn(IADD);
 		mv.visitVarInsn(ISTORE,3);
 		
+	//print	
 		mv.visitFieldInsn(GETSTATIC,"java/lang/System", "out", "Ljava/io/PrintStream;");
 		mv.visitVarInsn(ILOAD,3);
 		mv.visitMethodInsn(INVOKEVIRTUAL, "java/io/PrintStream", "println", "(I)V", false);
