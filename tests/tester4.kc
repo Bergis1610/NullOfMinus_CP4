@@ -3,14 +3,17 @@ PROGRAM tester4
 DECLARE
 	INTEGER x
 	INTEGER y
+#	INTEGER e
 	INTEGER z
 	
 BEGIN
 
-SET x := 5
+SET x := 3
 SET y := 2
+#SET e := 1
 
-SET z := x - (y * y)
+SET z := (y*(x+x)-y)/y
+# 	(2*(3+3)-2)/2 	2*6 -2 = 10/2 = 5
 
 PRINT z
 

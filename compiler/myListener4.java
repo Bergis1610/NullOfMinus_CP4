@@ -49,33 +49,41 @@ public class variable{
 	public static final String STR = "STRING";
 	
 	
-	public int count;
-	public String outputString;
-	public int outputInt;
-	public String key;
-	public String key2;
+	
 	public variable currvar;
 	public variable extravar;
-	
-	public int num;
-	public String id;
-	
 	public variable var1;
 	public variable var2;
 	
+	public String outputString;
+	public String key;
+	public String key2;
+	public String keyID;
+	public String id;
 	public String genNum;
 	public String genIntStr;
 	public String genString;
 	public String op1 = "";
 	public String op2 = "";
+	public String operation = " ";
+	
+	
 	public int operator1;
 	public int operator2;
+	public int num;
+	public int outputInt;
+	public int count;
+	public int skipCount = 0;
+	
+	
 	public boolean printString;
 	public boolean operationDone;
 	public boolean genBool;
 	public boolean genPrint;
 	public boolean expre;
 	public boolean enter;
+	public boolean exit = false;
+	//public boolean parenthesisWait;
 	
 	public int memoryCounter = 1;
 	//public boolean changeVar;
@@ -136,6 +144,9 @@ public class variable{
             	Label returnl = new Label();
 
 	public void setupClass(){
+	
+		if(exit)
+			return;
 		
 		//Set up the classwriter
 		cw = new ClassWriter(ClassWriter.COMPUTE_FRAMES);
@@ -162,11 +173,16 @@ public class variable{
 		
 
 	public void closeClass(){
+	
+		if(exit)
+			return;
 		//Use global MethodVisitor to finish writing the bytecode and write the binary file.
-		mainVisitor.visitLabel(returnl);
+		
+		//mainVisitor.visitLabel(returnl);
+		
 		
 		mainVisitor.visitInsn(Opcodes.RETURN);
-		mainVisitor.visitMaxs(3, 3);
+		mainVisitor.visitMaxs(20, 20);
 		mainVisitor.visitEnd();
 
 		cw.visitEnd();
@@ -193,22 +209,28 @@ public class variable{
 
 	@Override
 	public void enterFile(KnightCodeParser.FileContext ctx){
-
+	
 		System.out.println("Enter program rule for first time");
 		setupClass();
 	}
 	
 	@Override
 	public void exitFile(KnightCodeParser.FileContext ctx){
+		if(exit)
+			return;
 
-		System.out.println("Leaving program rule. . .");
+		
 		closeClass();
+		System.out.println("Leaving program rule. . .");
 
 	}
 
 
 	@Override 
 	public void enterDeclare(KnightCodeParser.DeclareContext ctx){
+		if(exit)
+			return;
+			
 		System.out.println("Enter declare");
 		
 		enter = false;
@@ -217,6 +239,9 @@ public class variable{
 	}
 	@Override 
 	public void exitDeclare(KnightCodeParser.DeclareContext ctx){
+		if(exit)
+			return;
+			
 		printHashMap(SymbolTable);
 		
 		enter = true;
@@ -225,6 +250,8 @@ public class variable{
 
 	@Override 
 	public void enterVariable(KnightCodeParser.VariableContext ctx){
+		if(exit)
+			return;
 		
 		
 		System.out.println("Enter variable");
@@ -245,17 +272,23 @@ public class variable{
 	}
 	@Override 
 	public void exitVariable(KnightCodeParser.VariableContext ctx){ 
+		if(exit)
+			return;
 	
 		System.out.println("Exit variable");
 	}
 	
 	@Override 
 	public void enterIdentifier(KnightCodeParser.IdentifierContext ctx){
+		if(exit)
+			return;
 	
 	}
 	
 	@Override 
 	public void exitIdentifier(KnightCodeParser.IdentifierContext ctx){ 
+		if(exit)
+			return;
 	
 	}
 	
@@ -267,6 +300,8 @@ public class variable{
 	
 	@Override 
 	public void enterBody(KnightCodeParser.BodyContext ctx){ 
+		if(exit)
+			return;
 		System.out.println("Enter body!");
 		
 		count = ctx.getChildCount();
@@ -274,6 +309,8 @@ public class variable{
 	}
 	@Override 
 	public void exitBody(KnightCodeParser.BodyContext ctx){ 
+		if(exit)
+			return;
 	
 		printHashMap(SymbolTable);
 		
@@ -289,13 +326,28 @@ public class variable{
 	
 	@Override 
 	public void enterSetvar(KnightCodeParser.SetvarContext ctx){ 
+		if(exit)
+			return;
+			
 		System.out.println("Enter setvar");
+		genIntStr = "";
 		
 		if(ctx.getChild(1) != null)
 			key = ctx.getChild(1).getText();
 			
 		System.out.println("\n"+key);	
-		currvar = SymbolTable.get(key);
+		if(SymbolTable.containsKey(key)){
+			currvar = SymbolTable.get(key);
+		} else {
+			System.out.println("------------------------------------------");
+			System.out.println("COMPILER ERROR");
+			System.out.println("------------------------------------------");
+			
+			System.out.println("Identifier: " + key + " was not declared");
+			exit = true;
+			return;
+		
+		}
 		
 		if(isString(currvar)){
 			genIntStr = ctx.getChild(3).getText();
@@ -305,6 +357,8 @@ public class variable{
 	
 	@Override 
 	public void exitSetvar(KnightCodeParser.SetvarContext ctx){ 
+		if(exit)
+			return;
 	
 		
 		currvar.value = genIntStr;
@@ -329,12 +383,16 @@ public class variable{
 	
 	@Override 
 	public void enterNumber(KnightCodeParser.NumberContext ctx){ 
+		if(exit)
+			return;
 		System.out.println("Enter Number");
 		genIntStr = ctx.getText();		
 	}
 	
 	@Override 
 	public void exitNumber(KnightCodeParser.NumberContext ctx){ 
+		if(exit)
+			return;
 	
 		num = Integer.valueOf(genIntStr);	
 		mainVisitor.visitIntInsn(SIPUSH, num);
@@ -344,26 +402,92 @@ public class variable{
 	
 	@Override 
 	public void enterId(KnightCodeParser.IdContext ctx){ 
+		if(exit)
+			return;
 		System.out.println("enter ID");
+		
+		keyID = ctx.getText();
+		
+		if(SymbolTable.containsKey(keyID)){
+			var1 = SymbolTable.get(keyID);
+			//op1 = var1.value;
+			op1 = keyID;
+			operator1 = var1.memLoc;
+			mainVisitor.visitIntInsn(ILOAD, operator1);
+		} else {
+			System.out.println("------------------------------------------");
+			System.out.println("COMPILER ERROR");
+			System.out.println("------------------------------------------");
+			
+			System.out.println("ID: " + keyID + " does not exist!");
+			exit = true;
+			return;
+		
+		}
+		
+		genIntStr += op1;
 		
 	}
 	@Override 
 	public void exitId(KnightCodeParser.IdContext ctx){ 
+		if(exit)
+			return;
 	
 		System.out.println("Exit ID");
+		
+		genIntStr += operation.charAt(0);
+		if(operation.length() != 0)
+			operation = operation.substring(1);
+	}
+	
+	
+	
+	
+	/**
+	 * Parenthesis
+	 *
+	 */
+	@Override 
+	public void enterParenthesis(KnightCodeParser.ParenthesisContext ctx){ 
+		if(exit)
+			return;
+		System.out.println("Enter parenthesis");
+		genIntStr += "(";
+		operation = ")" + operation;
+		//parenthesisWait = true;
+	
+	}
+	@Override 
+	public void exitParenthesis(KnightCodeParser.ParenthesisContext ctx){ 
+		if(exit)
+			return;
+		//skipCount = 1;
+		
+		genIntStr += operation.charAt(0);
+		if(operation.length() != 0)
+			operation = operation.substring(1);
+		
+		
+		//parenthesisWait = false;
+		System.out.println("Exit parenthesis");
 	}
 	
 	
 	/**
-	 * Multiplication
+	 * Addition
 	 *
 	 */
 	@Override 
-	public void enterMultiplication(KnightCodeParser.MultiplicationContext ctx){ 
-	
-		System.out.println("Enter multiplication");
+	public void enterAddition(KnightCodeParser.AdditionContext ctx){ 
+		if(exit)
+			return;
+		System.out.println("Enter addition");
 		
+		operation = "+" + operation;
 		
+		//Test
+		//System.out.println(ctx.getChild(0).getChildCount());
+		/*
 		if(ctx.getChild(0).getChildCount() == 1){
 			var1 = SymbolTable.get(ctx.getChild(0).getText());
 			
@@ -374,23 +498,91 @@ public class variable{
 			}
 			genIntStr = op1;
 		}
+		*/
 		
+		//Test
+		//System.out.println(ctx.getChild(0).getText());	
+
+
 	}
-	@Override 
-	public void exitMultiplication(KnightCodeParser.MultiplicationContext ctx){ 
 	
+	@Override 
+	public void exitAddition(KnightCodeParser.AdditionContext ctx){ 
+		if(exit)
+			return;
+		
+		/*
 		var2 = SymbolTable.get(ctx.getChild(2).getText());
 		if(var2 != null){
 			op2 = var2.value;
 			operator2 = var2.memLoc;
 		}
 	
-		genIntStr += " * " + op2;
+		genIntStr += " + " + op2;
+		operationDone = true;
+		
+		*/
+		
+		//ASM byte code stuff
+	
+		//mainVisitor.visitIntInsn(ILOAD, operator2);
+		
+		
+		
+		mainVisitor.visitInsn(IADD);
+            		
+            	
+		System.out.println("Exit addition");
+	}
+	
+	/**
+	 * Multiplication
+	 *
+	 */
+	@Override 
+	public void enterMultiplication(KnightCodeParser.MultiplicationContext ctx){ 
+		if(exit)
+			return;
+	
+		System.out.println("Enter multiplication");
+		operation = "*" + operation;
+		
+		/*
+		if(ctx.getChild(0).getChildCount() == 1){
+			var1 = SymbolTable.get(ctx.getChild(0).getText());
+			
+			if(var1 != null){
+				op1 = var1.value;
+				operator1 = var1.memLoc;
+				mainVisitor.visitIntInsn(ILOAD, operator1);
+			}
+			genIntStr = op1;
+		}
+		*/
+		
+	}
+	@Override 
+	public void exitMultiplication(KnightCodeParser.MultiplicationContext ctx){ 
+		if(exit)
+			return;
+	/*
+		var2 = SymbolTable.get(ctx.getChild(2).getText());
+		if(var2 != null){
+			op2 = var2.value;
+			operator2 = var2.memLoc;
+		}
+	
+		//" * " + 
+		genIntStr += " * " + op2 ;
 		operationDone = true;
 		
 		//ASM byte code stuff
 	
+		//if(skipCount == 0)
 		mainVisitor.visitIntInsn(ILOAD, operator2);
+		
+		
+	*/	
 		mainVisitor.visitInsn(IMUL);
             		
             	
@@ -404,9 +596,12 @@ public class variable{
 	 */
 	@Override 
 	public void enterDivision(KnightCodeParser.DivisionContext ctx){ 
+		if(exit)
+			return;
 	
 		System.out.println("Enter division");
-		
+		operation = "/"+operation;
+		/*
 		
 		if(ctx.getChild(0).getChildCount() == 1){
 			var1 = SymbolTable.get(ctx.getChild(0).getText());
@@ -418,11 +613,14 @@ public class variable{
 			}
 			genIntStr = op1;
 		}
+		*/
 		
 	}
 	@Override 
 	public void exitDivision(KnightCodeParser.DivisionContext ctx){ 
-		
+		if(exit)
+			return;
+		/*
 		var2 = SymbolTable.get(ctx.getChild(2).getText());
 		if(var2 != null){
 			op2 = var2.value;
@@ -433,8 +631,11 @@ public class variable{
 		operationDone = true;
 		
 		//ASM byte code stuff
-	
+		//if(skipCount == 0)
 		mainVisitor.visitIntInsn(ILOAD, operator2);
+		
+		
+		*/
 		mainVisitor.visitInsn(IDIV);
             		
             	
@@ -449,8 +650,12 @@ public class variable{
 	 */
 	@Override 
 	public void enterSubtraction(KnightCodeParser.SubtractionContext ctx){ 
+		if(exit)
+			return;
+			
 		System.out.println("Enter subtraction");
-		
+		operation = "-"+operation;
+		/*
 		
 		if(ctx.getChild(0).getChildCount() == 1){
 			var1 = SymbolTable.get(ctx.getChild(0).getText());
@@ -462,9 +667,15 @@ public class variable{
 			}
 			genIntStr = op1;
 		}
+		
+		*/
 	}
 	@Override 
 	public void exitSubtraction(KnightCodeParser.SubtractionContext ctx){ 
+		if(exit)
+			return;
+			
+		/*	
 		var2 = SymbolTable.get(ctx.getChild(2).getText());
 		if(var2 != null){
 			op2 = var2.value;
@@ -476,56 +687,17 @@ public class variable{
 		
 		//ASM byte code stuff
 	
+		//if(skipCount == 0)
 		mainVisitor.visitIntInsn(ILOAD, operator2);
+		
+		*/
 		mainVisitor.visitInsn(ISUB);
             		
             	
 		System.out.println("Exit subtraction");
 	}
 	
-	/**
-	 * Addition
-	 *
-	 */
-	@Override 
-	public void enterAddition(KnightCodeParser.AdditionContext ctx){ 
-		System.out.println("Enter addition");
-		
-		
-		if(ctx.getChild(0).getChildCount() == 1){
-			var1 = SymbolTable.get(ctx.getChild(0).getText());
-			
-			if(var1 != null){
-				op1 = var1.value;
-				operator1 = var1.memLoc;
-				mainVisitor.visitIntInsn(ILOAD, operator1);
-			}
-			genIntStr = op1;
-		}		
-
-
-	}
 	
-	@Override 
-	public void exitAddition(KnightCodeParser.AdditionContext ctx){ 
-		
-		var2 = SymbolTable.get(ctx.getChild(2).getText());
-		if(var2 != null){
-			op2 = var2.value;
-			operator2 = var2.memLoc;
-		}
-	
-		genIntStr += " + " + op2;
-		operationDone = true;
-		
-		//ASM byte code stuff
-	
-		mainVisitor.visitIntInsn(ILOAD, operator2);
-		mainVisitor.visitInsn(IADD);
-            		
-            	
-		System.out.println("Exit addition");
-	}
 	
 
 	/**
@@ -551,18 +723,7 @@ public class variable{
 	
 	}
 	
-	/**
-	 * Parenthesis
-	 *
-	 */
-	@Override 
-	public void enterParenthesis(KnightCodeParser.ParenthesisContext ctx){ 
 	
-	}
-	@Override 
-	public void exitParenthesis(KnightCodeParser.ParenthesisContext ctx){ 
-	
-	}
 
 	
 	
@@ -580,6 +741,8 @@ public class variable{
 	 */
 	@Override
 	public void enterPrint(KnightCodeParser.PrintContext ctx){
+		if(exit)
+			return;
 		System.out.println("Enter print");
 		
 
@@ -612,6 +775,8 @@ public class variable{
 
 	@Override 
 	public void exitPrint(KnightCodeParser.PrintContext ctx){ 
+		if(exit)
+			return;
 	
 	
 		if(genPrint){
