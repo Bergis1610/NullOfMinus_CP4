@@ -1,0 +1,18 @@
+PROGRAM tester4
+
+DECLARE
+	INTEGER x
+	INTEGER y
+	INTEGER z
+	
+BEGIN
+
+SET x := 5
+SET y := 2
+
+SET z := x - (y * y)
+
+PRINT z
+
+END
+

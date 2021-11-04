@@ -25,11 +25,23 @@ public class comptest{
         KnightCodeParser parser;
 
 	String file;
-	if(args.length == 0)
-		file = "tests/program1.kc";
-	else 
-		file = args[0];
+	String output;
+	if(args.length == 2){
 	
+		file = args[0];
+		output = args[1];
+		
+	} else if(args.length == 1){ 
+	
+		file = args[0];
+		output = "output/output1";
+	
+	} else {
+	
+		file = "tests/program1.kc";
+		output = "output/output1";
+	
+	}
         try{
         
         
@@ -44,7 +56,7 @@ public class comptest{
             
             
             //Walk the tree using the myListener2 class
-            myListener3 listener = new myListener3("output/output1");
+            myListener4 listener = new myListener4(output);
 	    ParseTreeWalker walker = new ParseTreeWalker();
 	    walker.walk(listener, tree);
             

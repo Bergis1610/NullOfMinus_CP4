@@ -5,11 +5,19 @@ public class tester3{
 	public static void main(String[]args){
 	
 	
+	/*
 		int x = 10;
 		int y = 11;
 		int f = 12;
 		int e = 13;
 		int z = x+y+f+e;
+	*/
+	
+		int x = 20;
+		int y = 5;
+		int f = 5;
+		int e = 5;
+		int z = x-y-f-e;	
 		
 		System.out.println(z);
 		

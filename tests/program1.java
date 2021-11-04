@@ -4,11 +4,14 @@ public class program1{
 
 	public static void main(String[]args){
 	
-		int x = 1010;
-		int y = 12;
-		int z = x+y;
+		boolean l = true;
 		
-		System.out.println(z);
+		if(l)
+			System.out.println("ITS TRUE!");
+		else 
+			System.out.println("false");
+		
+		
 	
 	
 	}
