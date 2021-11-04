@@ -2,11 +2,27 @@ PROGRAM tester3
 
 DECLARE
 	INTEGER x
+	INTEGER y
+	INTEGER f
+	INTEGER e
+	INTEGER z
 	
+
 BEGIN
 
-	SET x := 10
+SET x := 10
+SET y := 11
+SET f := 12
+SET e := 13
 
-	PRINT x
+# 10 + 12 + 15 = 37
 
-END	
+SET z := x + y + f + e
+
+#PRINT x
+#PRINT y
+#PPRINT f
+PRINT z
+
+END
+

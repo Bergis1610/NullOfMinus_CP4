@@ -75,7 +75,9 @@ public class variable{
 	public boolean printString;
 	public boolean operationDone;
 	public boolean genBool;
+	public boolean genPrint;
 	public boolean expre;
+	public boolean enter;
 	
 	public int memoryCounter = 1;
 	//public boolean changeVar;
@@ -196,6 +198,7 @@ public class variable{
 	public void enterDeclare(KnightCodeParser.DeclareContext ctx){
 		System.out.println("Enter declare");
 		
+		enter = false;
 		count = ctx.getChildCount();
 		/*
 		int i = 1;
@@ -210,11 +213,13 @@ public class variable{
 	public void exitDeclare(KnightCodeParser.DeclareContext ctx){
 		printHashMap(SymbolTable);
 		
+		enter = true;
 		System.out.println("Exit declare");
 	}
 
 	@Override 
 	public void enterVariable(KnightCodeParser.VariableContext ctx){
+		
 		
 		System.out.println("Enter variable");
 		
@@ -293,6 +298,10 @@ public class variable{
 			
 		System.out.println("\n"+key);	
 		currvar = SymbolTable.get(key);
+		
+		if(isString(currvar)){
+			genIntStr = ctx.getChild(3).getText();
+		}
 			
 			
 			
@@ -302,35 +311,27 @@ public class variable{
 	@Override 
 	public void exitSetvar(KnightCodeParser.SetvarContext ctx){ 
 	
-		boolean skip = false;
-	
-		if(operationDone){
-			currvar.value = genIntStr;
-			skip = true;
-			
-		}	
-			
-		//Already in variable;	
-		//currvar.memLoc = memoryCounter;
+		
+		currvar.value = genIntStr;
 		SymbolTable.put(key, currvar);
 		
 		//ASM bytecode stuff
-		if(!skip){
 		
-			int store = currvar.memLoc;
+		int store = currvar.memLoc;
 		
-			genBool = isString(currvar);
+		genBool = isString(currvar);
 			
-		
-			if(genBool){
-				mainVisitor.visitLdcInsn(currvar.value);
-			} else {
-				num = Integer.valueOf(currvar.value);
-				mainVisitor.visitIntInsn(SIPUSH, num);
-			}
-            		mainVisitor.visitVarInsn(ISTORE,store);	
+		if(genBool){
+			mainVisitor.visitLdcInsn(currvar.value);
+			mainVisitor.visitVarInsn(ASTORE,store);
+		} else {
+			
+			mainVisitor.visitVarInsn(ISTORE,store);
+		}
+            		
+            		
             	
-            	}
+            	
             	
             	
 		
@@ -346,9 +347,7 @@ public class variable{
 	@Override 
 	public void enterNumber(KnightCodeParser.NumberContext ctx){ 
 		System.out.println("Enter Number");
-		genNum = ctx.getText();
-		currvar.value = genNum;
-		
+		genIntStr = ctx.getText();
 		
 		//Test 			WORKS!
 		//System.out.println("num = " + num);
@@ -358,7 +357,8 @@ public class variable{
 	@Override 
 	public void exitNumber(KnightCodeParser.NumberContext ctx){ 
 	
-	
+		num = Integer.valueOf(genIntStr);	
+		mainVisitor.visitIntInsn(SIPUSH, num);
 		System.out.println("Exit Number");
 	}
 	
@@ -376,35 +376,6 @@ public class variable{
 	@Override 
 	public void exitId(KnightCodeParser.IdContext ctx){ 
 	
-	
-	
-		/*
-		genString = extravar.variableType;
-		
-		
-		if(extravar.value != null){
-		
-			System.out.println("val is not null");
-			if(genString.equals(INT)){
-			
-				isInteger = true;
-			
-				//		    \
-				//Error right here  V
-			
-				outputInt = (int)extravar.value;
-				
-				//System.out.println("About to exit ID");
-			
-			} else{
-				//System.out.println("About to exit ID");
-				outputString = String.valueOf(extravar.value);
-					
-			}
-		}
-		*/
-	
-	
 		System.out.println("Exit ID");
 	}
 	
@@ -415,14 +386,26 @@ public class variable{
 	public void enterAddition(KnightCodeParser.AdditionContext ctx){ 
 		System.out.println("Enter addition");
 		
-		var1 = SymbolTable.get(ctx.getChild(0).getText());
-		op1 = var1.value;
-		operator1 = var1.memLoc;
-		//System.out.println("\n " + op1);
 		
-		var2 = SymbolTable.get(ctx.getChild(2).getText());
-		op2 = var2.value;
-		operator2 = var2.memLoc;
+		
+		
+		//System.out.println("\nEND HERE?\n");
+		
+		//count = ctx.getChildCount();
+		if(ctx.getChild(0).getChildCount() == 1){
+			var1 = SymbolTable.get(ctx.getChild(0).getText());
+			
+			if(var1 != null){
+				op1 = var1.value;
+				operator1 = var1.memLoc;
+				mainVisitor.visitIntInsn(ILOAD, operator1);
+			}
+			genIntStr = op1;
+		}		
+		
+		
+		
+		//System.out.println("\n " + op1);
 		//System.out.println("\n " + op2);
 		
 		//operator1 = Integer.valueOf(op1);
@@ -431,20 +414,21 @@ public class variable{
 	
 	@Override 
 	public void exitAddition(KnightCodeParser.AdditionContext ctx){ 
+		
+		var2 = SymbolTable.get(ctx.getChild(2).getText());
+		if(var2 != null){
+			op2 = var2.value;
+			operator2 = var2.memLoc;
+		}
 	
-		genIntStr = op1 + " + " + op2;
+		genIntStr += " + " + op2;
 		operationDone = true;
 		
-		
 		//ASM byte code stuff
-		
-		int store = currvar.memLoc;
-		
-		
-		mainVisitor.visitIntInsn(ILOAD, operator1);
+	
 		mainVisitor.visitIntInsn(ILOAD, operator2);
 		mainVisitor.visitInsn(IADD);
-            	mainVisitor.visitVarInsn(ISTORE,store);	
+            		
             	
 		System.out.println("Exit addition");
 	}
@@ -484,23 +468,25 @@ public class variable{
 		mainVisitor.visitFieldInsn(Opcodes.GETSTATIC,"java/lang/System", "out", "Ljava/io/PrintStream;");
 		
 		if(SymbolTable.containsKey(key2)){
-		
+			genPrint = false;
 			extravar = SymbolTable.get(key2);
 			
+			outputInt = extravar.memLoc;
 			if(isString(extravar)){
 				
-				outputString = extravar.value;
+				//outputString = extravar.value;
 			
 				printString = true;
 				
 			} else { 
-				outputInt = extravar.memLoc;
+				
 				
 				printString = false;
 			}
 			
 		
 		} else {
+			genPrint = true;
 			outputString = key2; 
 		}
 		//printString = true;
@@ -516,15 +502,21 @@ public class variable{
 	public void exitPrint(KnightCodeParser.PrintContext ctx){ 
 	
 	
-		if(printString){
+		if(genPrint){
 			System.out.println("\nString will be printed to bytecode file\n");
 			mainVisitor.visitLdcInsn(outputString);
 			mainVisitor.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/io/PrintStream",  "println", "(Ljava/lang/String;)V", false);
 		} else {
-			System.out.println("\nInt will be printed to bytecode file\n");
-			mainVisitor.visitVarInsn(Opcodes.ILOAD, outputInt);
-			mainVisitor.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/io/PrintStream", "println", "(I)V", false);
+			if(printString){
+				System.out.println("\nString will be printed to bytecode file\n");
+				mainVisitor.visitVarInsn(ALOAD, outputInt);
+				mainVisitor.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/io/PrintStream",  "println", "(Ljava/lang/String;)V", false);
+			} else {
+				System.out.println("\nInt will be printed to bytecode file\n");
+				mainVisitor.visitVarInsn(Opcodes.ILOAD, outputInt);
+				mainVisitor.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/io/PrintStream", "println", "(I)V", false);
 		
+			}
 		}
 	
 		
