@@ -1,0 +1,19 @@
+PROGRAM tester3
+
+DECLARE
+
+	STRING x
+	STRING y
+	STRING z
+
+BEGIN
+
+SET x := "1"
+SET y := "11"
+
+SET z := "x + y"
+
+PRINT z
+
+END
+

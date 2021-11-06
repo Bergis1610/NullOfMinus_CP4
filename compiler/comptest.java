@@ -25,11 +25,23 @@ public class comptest{
         KnightCodeParser parser;
 
 	String file;
-	if(args.length == 0)
-		file = "tests/program1.kc";
-	else 
-		file = args[0];
+	String output;
+	if(args.length == 2){
 	
+		file = args[0];
+		output = args[1];
+		
+	} else if(args.length == 1){ 
+	
+		file = args[0];
+		output = "output/output1";
+	
+	} else {
+	
+		file = "tests/program1.kc";
+		output = "output/output1";
+	
+	}
         try{
         
         
@@ -39,13 +51,14 @@ public class comptest{
             parser = new KnightCodeParser(tokens); //create the parser
         
        
-            ParseTree tree = parser.file();  //set the start location of the parser
-            //Trees.inspect(tree, parser);
+            //set the start location of the parser
+            ParseTree tree = parser.file(); 
             
-            //System.out.println(tree.toStringTree(parser));
             
-            myListener2 listener = new myListener2("output1");
+            //Walk the tree using the myListener2 class
+            myListener5 listener = new myListener5(output);
 	    ParseTreeWalker walker = new ParseTreeWalker();
+	    
 	    walker.walk(listener, tree);
             
         
@@ -57,6 +70,14 @@ public class comptest{
 
     }
 
+//Scratch
+/*
+
+Trees.inspect(tree, parser);
+            
+System.out.println(tree.toStringTree(parser));
+
+*/
 
 
 

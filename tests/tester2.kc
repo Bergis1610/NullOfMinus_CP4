@@ -5,5 +5,10 @@ DECLARE
 	STRING str
 	
 BEGIN
-	PRINT "Hello World"
+
+	SET str := "Hello World"
+	
+	PRINT str
+	
+	PRINT "Hey"
 END	
