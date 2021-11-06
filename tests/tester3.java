@@ -13,13 +13,40 @@ public class tester3{
 		int z = x+y+f+e;
 	*/
 	
-		int x = 20;
-		int y = 5;
-		int f = 5;
-		int e = 5;
-		int z = x-y-f-e;	
+		int x = 1;
+		int y = 0;
+		int z;
 		
-		System.out.println(z);
+	
+		if(x>y){
+		
+			System.out.println("CORRECT");	
+			
+		} else {
+		
+			System.out.println("WRONG");
+		
+		}
+	
+	
+		
+		//boolean z = (x>y);	
+		// 20>5
+		
+	//	System.out.println(z);
+		
+		/*
+		if(x>y)
+			System.out.println("CORRECT");		
+		else 
+			System.out.println("WRONG");
+		*/
+		
+		//boolean z = (x==y);	
+		// 20>5
+		
+		
+		//System.out.println(z);
 		
 	
 	/*

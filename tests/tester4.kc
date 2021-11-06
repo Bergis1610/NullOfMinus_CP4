@@ -3,19 +3,66 @@ PROGRAM tester4
 DECLARE
 	INTEGER x
 	INTEGER y
-#	INTEGER e
-	INTEGER z
+	#	INTEGER z
+	
+	#	INTEGER e
+
 	
 BEGIN
 
-SET x := 3
-SET y := 2
-#SET e := 1
+		#SET e := 1
+SET x := 1
+SET y := 0
+		#SET z := x<>y
 
-SET z := (y*(x+x)-y)/y
-# 	(2*(3+3)-2)/2 	2*6 -2 = 10/2 = 5
 
-PRINT z
+#IF 10 > 1 
+#THEN 
+#PRINT "CORRECT" 
+#ELSE 
+#PRINT "WRONG" 
+#ENDIF
+
+
+IF 10 < 1 
+THEN 
+PRINT "CORRECT" 
+			
+ENDIF
+
+IF 10 > 1 
+THEN 
+PRINT "CORRECT" 
+			
+ENDIF
+
+
+
+
+
+		#SET z := (y*(x+x)-y)/y
+	#PRINT z
+
+
+
+	#	(y*(x+x)-y)/y
+	# 	(2*(3+3)-2)/2 	2*6 -2 = 10/2 = 5
+	#PRINT z
 
 END
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
