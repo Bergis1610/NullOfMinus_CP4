@@ -100,6 +100,33 @@ public class tester3{
 
 */
 
+/*
+
+
+IF 10 >1 
+THEN 
+PRINT "CORRECT 1" 			
+ENDIF
+
+IF 10 > 1 
+THEN 
+PRINT "CORRECT 2" 		
+ENDIF
+
+IF 10 > 1 
+THEN 
+PRINT "CORRECT 3"   			
+ENDIF
+IF 10 > 1 
+THEN 
+PRINT "CORRECT 4" 			
+ENDIF
+IF 10 > 1 
+THEN 
+PRINT "CORRECT 5" 			
+ENDIF
+*/
+
 
 
 

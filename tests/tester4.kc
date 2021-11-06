@@ -16,25 +16,25 @@ SET y := 0
 		#SET z := x<>y
 
 
-#IF 10 > 1 
-#THEN 
-#PRINT "CORRECT" 
-#ELSE 
-#PRINT "WRONG" 
-#ENDIF
+IF 1 = 1  
 
-
-IF 10 < 1 
+#	//One statement
 THEN 
+PRINT "LETS SEE IF THIS WORKS!"
 PRINT "CORRECT" 
-			
+
+
+#	//Two statements
+ELSE 
+PRINT "WRONG" 
+PRINT "WRONG AGAIN"
+
+
 ENDIF
 
-IF 10 > 1 
-THEN 
-PRINT "CORRECT" 
-			
-ENDIF
+
+
+
 
 
 

@@ -751,7 +751,7 @@ public class variable{
 			
 		//mainVisitor.visitJumpInsn(compString, Label label);
 		
-		System.out.println("Exit Comp");
+		System.out.println("Exit Comp\n\n\n");
 	}
 	
 	
@@ -767,11 +767,7 @@ public class variable{
 
 	
 	
-	public static int ifCount;
-	public static int elseCount;
-	
-	public static int decLabCount = 0;
-	public int decCount2 = 0;
+
 	
 	
 	//Label[] decLabelAr = new Label[5];
@@ -791,6 +787,12 @@ public class variable{
 	Label endDecLab2 = new Label();
 	Label endDecLab3 = new Label();
 	Label endDecLab4 = new Label();
+	
+	Label startOfElse0 = new Label();
+	Label startOfElse1 = new Label();
+	Label startOfElse2 = new Label();
+	Label startOfElse3 = new Label();
+	Label startOfElse4 = new Label();
 	/*
 	decLabelAr[0] = decLab0;
 	decLabelAr[1] = decLab1;
@@ -806,7 +808,11 @@ public class variable{
 	*/
 	
 	
+	public static int ifCount;
+	public static int elseCount;
 	
+	public static int decLabCount = 0;
+	public int decCount2 = 0;
 	/**
 	 * Decision
 	 *
@@ -830,11 +836,12 @@ public class variable{
 		} else {
 		
 			decLabCount++;	
-			decCount2++;		
+			//decCount2++;		
 		}
+		/*
 		System.out.println("decCount2 = " +decCount2);
 		System.out.println("decLabCount = " + decLabCount);
-		
+		*/
 		
 		//Possible issue might occurr for nested if-else statements, because when you enter a decision these values reset.
 		//Løsning til dette kan være å ha en array med en haug med sånne her så vi kan ha "nested"-enten-eller
@@ -878,28 +885,24 @@ public class variable{
 			System.out.println("COMPILER ERROR");
 			System.out.println("------------------------------------------");
 			
-			System.out.println("Syntax is wrong for If-Else statement!");
+			System.out.println("Syntax is wrong for If-Else statement! If statement must be followed by then");
 			
 			exit = true;
 			return;
 		
 		
 		}
-		if(decCount != 7){ 
-			if(ctx.getChild(decCount-2).getText().equalsIgnoreCase("ELSE")||ctx.getChild(5).getText().equalsIgnoreCase("ELSE")){
+		if(ctx.getChild(decCount-2).getText().equalsIgnoreCase("ELSE")||ctx.getChild(5).getText().equalsIgnoreCase("ELSE")){
 		
 				System.out.println("------------------------------------------");
 				System.out.println("COMPILER ERROR");
 				System.out.println("------------------------------------------");
 			
-				System.out.println("ELSE");
-				System.out.println("Syntax is wrong for If-Else statement!");
+				//System.out.println("ELSE");
+				System.out.println("Syntax is wrong for If-Else statement at ELSE");
 			
 				exit = true;
-				return;
-		
-		
-			}
+				return;	
 		}	
 		if(!ctx.getChild(decCount-1).getText().equalsIgnoreCase("ENDIF")){
 		
@@ -907,13 +910,10 @@ public class variable{
 			System.out.println("COMPILER ERROR");
 			System.out.println("------------------------------------------");
 			
-			//System.out.println("ENDIF");
-			System.out.println("Syntax is wrong for If-Else statement!");
-			
+
+			System.out.println("Syntax is wrong for If-Else statement at ENDIF");
 			exit = true;
 			return;
-		
-		
 		}
 		
 		
@@ -966,8 +966,7 @@ public class variable{
 		decOp2 = ctx.getChild(3).getText();
 		if(SymbolTable.containsKey(decOp2)){
 			var2 = SymbolTable.get(decOp2);
-			
-			
+
 			if(!var2.valueSet || var2.variableType.equalsIgnoreCase(STR)){
 				
 				System.out.println("------------------------------------------");
@@ -978,9 +977,7 @@ public class variable{
 				System.out.println("ID: " + decOp1 + " value has not been set, or ID is a String!");
 				
 				exit = true;
-				return;
-        			
-				
+				return;	
 			}
 			
 			operator2 = var2.memLoc;
@@ -990,11 +987,8 @@ public class variable{
 			  try{
             			
             			decOperator2 = Integer.valueOf(decOp2);
-            			mainVisitor.visitIntInsn(SIPUSH, decOperator2);
-            			
-            			
+            			mainVisitor.visitIntInsn(SIPUSH, decOperator2);	
        		     } catch(NumberFormatException e){
-        			//System.out.println(e.getMessage());
         			System.out.println("------------------------------------------");
 				System.out.println("COMPILER ERROR");
 				System.out.println("------------------------------------------");
@@ -1005,55 +999,114 @@ public class variable{
 				exit = true;
 				return;
         			
-        		     }
+        		     }	
+		}		
 			
-		
-		}
-		
-				
-	
-				
 		decCompSymbol = ctx.getChild(2).getChild(0).getText();
 		//compString = ctx.getChild(2).getChild(0).getText();
 		
-		Label temp; 
-		switch(decLabCount){
-			case 1: {
-				temp = endDecLab0;
-				break;
-			}
-			case 2: {
-				temp = endDecLab1;
-				break;
-			}
-			case 3: {
-				temp = endDecLab2;
-				break;
-			}
-			case 4: {
-				temp = endDecLab3;
-				break;
-			}
-			case 5: {
-				temp = endDecLab4;
-				break;
-			}
-			default: {
+		
 			
-				System.out.println("------------------------------------------");
-				System.out.println("COMPILER ERROR");
-				System.out.println("------------------------------------------");
-			
-				System.out.println("jump label failure for if-else statement at enter!");
+		
 				
-				exit = true;
-				return;
+//---------------------------------------------------------------------------------------------------			
+			
+			
+		if(decCount > 7){	
+	
+			prev = "THEN";		
+			tempInt = decCount-7;
+			//System.out.println("Temp int = " +tempInt);
+		
+			//THEN
+			while(tempInt > 0 && prev.equalsIgnoreCase("THEN")){
+		
+				if(ctx.getChild(decCount-tempInt-1).getText().equalsIgnoreCase("ELSE"))
+				prev = "ELSE";
+				
+				//System.out.println("THEN statement!");	
+				ifCount++;
+			
+				tempInt--;	
+			
 			}	
-				
-		}
+			//prev = "ELSE";
+			//ELSE
+			while(tempInt > 0){
+		
+				//System.out.println("ELSE statement!");
+				elseCount++;
+		
+				tempInt--;	
+			}
+		
+			//ENDIF
+		
+			System.out.println("ifCount: " + ifCount);
+			System.out.println("elseCount: " + elseCount);
 			
+		}
 		
+		Label temp; 
+		Label tempEnd;
 		
+			
+			switch(decLabCount){
+				case 1: {
+					temp = startOfElse0;
+					tempEnd = endDecLab0;
+					break;
+				}
+				case 2: {
+					temp = startOfElse1;
+					tempEnd = endDecLab1;
+					break;
+				}
+				case 3: {
+					temp = startOfElse2;
+					tempEnd = endDecLab2;
+					break;
+				}
+				case 4: {
+					temp = startOfElse3;
+					tempEnd = endDecLab3;
+					break;
+				}
+				case 5: {
+					temp = startOfElse4;
+					tempEnd = endDecLab4;
+					break;
+				}
+				//case 6: { }
+				//case 7: { }
+				//case 8: { }
+				//case 9: { }
+				default: {
+				
+					System.out.println("------------------------------------------");
+					System.out.println("COMPILER ERROR");
+					System.out.println("------------------------------------------");
+				
+					System.out.println("jump label failure for if-else statement at enter!");
+					
+					exit = true;
+					return;
+				}		
+			}
+			
+		String tempStringDecBla = "ifComp... ";
+		if(elseCount > 0){
+			tempStringDecBla += "startOfElse Label: ";
+			
+		} else {
+			tempStringDecBla += "end Label: ";
+			temp = tempEnd;
+				
+		}	
+		
+		System.out.println("-------------------------------------------------------");
+		System.out.println(tempStringDecBla + temp);	
+		System.out.println("-------------------------------------------------------");
 		if(decCompSymbol.equals(">")){
 				
 				//System.out.println("compString equals >: " +compString.equals(">"));
@@ -1081,39 +1134,6 @@ public class variable{
 			
 			}
 	
-		prev = "THEN";		
-		tempInt = decCount-7;
-		//System.out.println("Temp int = " +tempInt);
-		
-		//THEN
-		while(tempInt > 0 && prev.equalsIgnoreCase("THEN")){
-		
-			if(ctx.getChild(decCount-tempInt-1).getText().equalsIgnoreCase("ELSE"))
-				prev = "ELSE";
-				
-			//System.out.println("THEN statement!");	
-			ifCount++;
-			
-			tempInt--;	
-			
-		}	
-		//prev = "ELSE";
-		//ELSE
-		while(tempInt > 0){
-		
-			//System.out.println("ELSE statement!");
-			elseCount++;
-		
-			tempInt--;	
-		}
-		
-		//ENDIF
-		
-		System.out.println("ifCount: " + ifCount);
-		System.out.println("elseCount: " + elseCount);
-			
-	
-		
 
 	}
 	
@@ -1127,6 +1147,7 @@ public class variable{
 	public void enterPrint(KnightCodeParser.PrintContext ctx){
 		if(exit)
 			return;
+		System.out.println("-----------------------------------------------------------------");
 		System.out.println("Enter print");
 
 		
@@ -1152,9 +1173,7 @@ public class variable{
 			outputString = key2; 
 		}
 		
-		
-		
-
+	
 	}//end enterWrite_stmt
 
 	@Override 
@@ -1185,9 +1204,82 @@ public class variable{
 				mainVisitor.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/io/PrintStream", "println", "(I)V", false);
 			}
 		}
+		System.out.println("ifCount = " + ifCount);
 		
 		
-		System.out.println("Exit print");
+		
+		if(elseCount > 0){
+		
+			System.out.println("\nelseCount : " + elseCount);
+			
+			if(ifCount == 1){
+				ifCount--;
+				
+			
+				Label temper; 
+				Label tempEnd;
+				switch(decLabCount){
+					case 1: {
+						tempEnd = endDecLab0;
+						temper = startOfElse0;						
+						break;
+					}
+					case 2: {
+						tempEnd = endDecLab1;
+						temper = startOfElse1;
+						break;
+					}
+					case 3: {
+						tempEnd = endDecLab2;
+						temper = startOfElse2;						
+						break;
+					}
+					case 4: {
+						tempEnd = endDecLab3;
+						temper = startOfElse3;
+						break;
+					}
+					case 5: {
+						tempEnd = endDecLab4;
+						temper = startOfElse4;
+						break;
+					}
+					//case 6: { }
+					//case 7: { }
+					//case 8: { }
+					//case 9: { }
+					default: {
+					
+						System.out.println("------------------------------------------");
+						System.out.println("COMPILER ERROR");
+						System.out.println("------------------------------------------");
+					
+						System.out.println("jump label failure for if-else statement in print!");
+						
+						exit = true;
+						return;
+					}	
+						
+				}
+				System.out.println("-------------------------------------------------------");	
+				System.out.println("GOTO, end label= " + tempEnd);
+				System.out.println("Visit startOfElse Label= " + temper);
+				System.out.println("-------------------------------------------------------");
+	
+				mainVisitor.visitJumpInsn(GOTO, tempEnd);
+				mainVisitor.visitLabel(temper);
+			
+			} else {
+				//System.out.println("DOES THIS EVEN HAPPEN????");
+				//System.out.println("ifCount = " + ifCount);
+				ifCount--;
+			}
+			
+		
+		}
+		
+		
+		System.out.println("Exit print\n\n");
 	}
 	
 	
@@ -1199,44 +1291,52 @@ public class variable{
 		//decCount2--;
 		//System.out.println("decCount2 = " + decCount2);
 		
-		Label temp; 
-		switch(decLabCount) {
+		//if(elseCount == 0){
+			Label temp;
+			switch(decLabCount) {
 		
-			case 1: {
-				temp = endDecLab0;
-				break;
-			}
-			case 2: {
-				temp = endDecLab1;
-				break;
-			}
-			case 3: {
-				temp = endDecLab2;
-				break;
-			}
-			case 4: {
-				temp = endDecLab3;
-				break;
-			}
-			case 5: {
-				temp = endDecLab4;
-				break;
-			}
-			default: {
+				case 1: {
+					temp = endDecLab0;
+					break;
+				}
+				case 2: {
+					temp = endDecLab1;
+					break;
+				}
+				case 3: {
+					temp = endDecLab2;
+					break;
+				}
+				case 4: {
+					temp = endDecLab3;
+					break;
+				}
+				case 5: {
+					temp = endDecLab4;
+					break;
+				}
+				//case 6: { }
+				//case 7: { }
+				//case 8: { }
+				//case 9: { }
+				default: {
 			
-				System.out.println("------------------------------------------");
-				System.out.println("COMPILER ERROR");
-				System.out.println("------------------------------------------");
-			
-				System.out.println("jump label failure for if-else statement at exit");
+					System.out.println("------------------------------------------");
+					System.out.println("COMPILER ERROR");
+					System.out.println("------------------------------------------");
 				
-				exit = true;
-				return;
-			}	
-				
-		}
+					System.out.println("jump label failure for if-else statement at exit");
+					
+					exit = true;
+					return;
+				}	
+					
+			}
+		//}
 		
-		
+		System.out.println("-------------------------------------------------------");
+		System.out.println("Visit end label= " + temp);
+		System.out.println("-------------------------------------------------------");
 		mainVisitor.visitLabel(temp);
 		System.out.println("Exit Decision");
 	}
