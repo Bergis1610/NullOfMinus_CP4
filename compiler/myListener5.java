@@ -2385,11 +2385,11 @@ public class variable{
 		mainVisitor.visitJumpInsn(GOTO,temper);
 		mainVisitor.visitLabel(temp);
 		
-		/*
-		if(decNestStack.length() != 0)
-			decNestStack = decNestStack.substring(1);
-		*/
-		System.out.println("Current stack = " + decNestStack);	
+		
+		if(loopNestStack.length() != 0)
+			loopNestStack = loopNestStack.substring(1);
+		
+		System.out.println("Current stack = " + loopNestStack);	
 			
 			
 		if(elseCount1 > 0){

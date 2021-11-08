@@ -3,6 +3,7 @@ PROGRAM tester4
 DECLARE
 	INTEGER x
 	INTEGER y
+	INTEGER z
 	#	INTEGER z
 	
 	#	INTEGER e
@@ -22,10 +23,10 @@ SET y := 0
 
 
 
-
-
+PRINT "Please type an integer: "
+READ z
 IF
-	1 = 0
+	z > 5
 	THEN 
 		
 	IF 1 = 1 THEN PRINT "NESTED IF WORKED" ENDIF
@@ -39,9 +40,16 @@ IF
 
 	
 	ELSE
-	SET x:= 10
+	SET x:= 5
 	WHILE x > 0 DO
-		PRINT "HELLO!"
+		SET y := 5
+		
+		WHILE y > 0 DO
+			PRINT "y-loop"
+			SET y := y-1
+		ENDWHILE	
+		PRINT "	X-LOOP"
+		
 		SET x := x-1
 	ENDWHILE	
 	
