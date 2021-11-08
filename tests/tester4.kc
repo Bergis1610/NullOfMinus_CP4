@@ -1,5 +1,5 @@
 PROGRAM tester4
-
+  
 DECLARE
 	INTEGER x
 	INTEGER y
