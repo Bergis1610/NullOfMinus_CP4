@@ -2,13 +2,20 @@ PROGRAM tester2
 
 DECLARE
 
-	STRING str
+	INTEGER x
+	INTEGER y
+	INTEGER z
+	#STRING str
 	
 BEGIN
 
-	SET str := "Hello World"
+	SET x := 10
+	SET y := 18
+	SET z := ( x + y )/3
+	PRINT z
+	#SET str := "Hello World"
 	
-	PRINT str
+	#PRINT str
 	
-	PRINT "Hey"
+	#PRINT "Hey"
 END	

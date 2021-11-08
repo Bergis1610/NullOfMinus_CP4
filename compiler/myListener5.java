@@ -62,11 +62,12 @@ public class variable{
 	public String keyID;
 	public String id;
 	public String genNum;
-	public String genIntStr;
+	public String genIntStr = "  ";
 	public String genString;
 	public String op1 = "";
 	public String op2 = "";
 	public String operation = "  ";
+	public String arithmeticOperation = "  ";
 	public String compString;
 	public String decOp1;
 	public String decOp2;
@@ -371,7 +372,7 @@ public class variable{
 		if(SymbolTable.containsKey(key)){
 			currvar = SymbolTable.get(key);
 		} else {
-			System.out.println("------------------------------------------");
+			System.out.println("\n\n------------------------------------------");
 			System.out.println("COMPILER ERROR");
 			System.out.println("------------------------------------------");
 			
@@ -385,7 +386,7 @@ public class variable{
 		
 			if(ctx.getChild(3).getChildCount() != 0){
 			
-				System.out.println("------------------------------------------");
+				System.out.println("\n\n------------------------------------------");
 				System.out.println("COMPILER ERROR");
 				System.out.println("------------------------------------------");
 				
@@ -395,6 +396,7 @@ public class variable{
 			
 			}
 		
+			
 			genIntStr = ctx.getChild(3).getText();
 			System.out.println(genIntStr);
 		}
@@ -406,8 +408,9 @@ public class variable{
 		if(exit)
 			return;
 	
-		
+		System.out.println("final value of id = " + genIntStr);
 		currvar.value = genIntStr;
+		
 		
 		
 		//ASM bytecode stuff
@@ -425,19 +428,130 @@ public class variable{
 		}
 		currvar.valueSet = true;
 		SymbolTable.put(key, currvar);
+		
     	    
-    	    	operation = "  ";
+    	    	operation = "";
     	    	genIntStr = "";
+    	    	
+    	    	
+    	    	if(elseCount1 > 0){
+		
+			//System.out.println("IT SHOULD ENTER HERE!");
+			System.out.println("elseCount : " + elseCount1);
+			
+			if(ifCount1 == 1){
+				//ifCount1--;
+				//Label temper; 
+				Label tempEnd;
+				Label temper;
+				
+				int currentUsage = Character.getNumericValue(decNestStack.charAt(0));
+				//System.out.println("decLab - nestedDecLab: " + (decLabCount-nestedDecCount));
+				switch(currentUsage){
+					case 1: {
+						tempEnd = endDecLab0;
+						temper = startOfElse0;						
+						break;
+					}
+					case 2: {
+						tempEnd = endDecLab1;
+						temper = startOfElse1;
+						break;
+					}
+					case 3: {
+						tempEnd = endDecLab2;
+						temper = startOfElse2;						
+						break;
+					}
+					case 4: {
+						tempEnd = endDecLab3;
+						temper = startOfElse3;
+						break;
+					}
+					case 5: {
+						tempEnd = endDecLab4;
+						temper = startOfElse4;
+						break;
+					}
+					case 6: { 
+						tempEnd = endDecLab5;
+						temper = startOfElse5;
+						break;
+					
+					}
+					case 7: { 
+						tempEnd = endDecLab6;
+						temper = startOfElse6;
+						break;
+					
+					}
+					case 8: { 
+						tempEnd = endDecLab7;
+						temper = startOfElse7;
+						break;
+					
+					}
+					case 9: { 
+						tempEnd = endDecLab8;
+						temper = startOfElse8;
+						break;
+					
+					}
+					case 10: {
+						tempEnd = endDecLab9;
+						temper = startOfElse9;
+						break;
+					
+					}
+					default: {
+					
+						System.out.println("\n\n------------------------------------------");
+						System.out.println("COMPILER ERROR");
+						System.out.println("------------------------------------------");
+					
+						System.out.println("Case 2: jump label failure for if-else statement in exit decision!");
+						
+						exit = true;
+						return;
+					}	
+						
+				}
+				System.out.println("-------------------------------------------------------");	
+				System.out.println("GOTO, end label= " + tempEnd);
+				System.out.println("Visit startOfElse Label= " + temper);
+				System.out.println("-------------------------------------------------------");
+	
+				mainVisitor.visitJumpInsn(GOTO, tempEnd);
+				mainVisitor.visitLabel(temper);
+			
+			} else {
+				//System.out.println("DOES THIS EVEN HAPPEN????");
+				//System.out.println("ifCount = " + ifCount);
+				//ifCount1--;
+			}
+					
+		}
+		if(ifCount1 > 0)
+			ifCount1--;
+		//System.out.println("ifCount = " + ifCount1);
+		
+		System.out.println("ifCount = " + ifCount1);
+    	    	
+    	    	
+    	    	
+    	    	
+    	    	
 		System.out.println("Exit setvar");
 	}
 	
-	
+	public String enterAndExitNumber;
 	@Override 
 	public void enterNumber(KnightCodeParser.NumberContext ctx){ 
 		if(exit)
 			return;
 		System.out.println("Enter Number");
-		genIntStr = ctx.getText();		
+		enterAndExitNumber = ctx.getText();
+		genIntStr += enterAndExitNumber;			
 	}
 	
 	@Override 
@@ -445,7 +559,7 @@ public class variable{
 		if(exit)
 			return;
 	
-		num = Integer.valueOf(genIntStr);	
+		num = Integer.valueOf(enterAndExitNumber);	
 		mainVisitor.visitIntInsn(SIPUSH, num);
 		System.out.println("Exit Number");
 	}
@@ -466,11 +580,17 @@ public class variable{
 		if(SymbolTable.containsKey(keyID)){
 			var1 = SymbolTable.get(keyID);
 			op1 = keyID;
+			
+			//If we want the value in the symbol table to be contained as a numerical expression instead of variable expression
+			//op1 = var1.value;
+			
+			
+			
 			operator1 = var1.memLoc;
 			
 			
 			if(var1.variableType.equalsIgnoreCase(STR) && operationCount > 0){
-				System.out.println("------------------------------------------");
+				System.out.println("\n\n------------------------------------------");
 				System.out.println("COMPILER ERROR");
 				System.out.println("------------------------------------------");
 				
@@ -481,10 +601,13 @@ public class variable{
 			
 			}
 			
-			
-			mainVisitor.visitIntInsn(ILOAD, operator1);
+			if(isString(var1)){
+				mainVisitor.visitIntInsn(ALOAD, operator1);
+			} else {
+				mainVisitor.visitIntInsn(ILOAD, operator1);
+			}
 		} else {
-			System.out.println("------------------------------------------");
+			System.out.println("\n\n------------------------------------------");
 			System.out.println("COMPILER ERROR");
 			System.out.println("------------------------------------------");
 			
@@ -504,13 +627,13 @@ public class variable{
 	
 		System.out.println("Exit ID");
 		
-		genIntStr += operation.charAt(0);
-		if(operation.length() != 0)
-			operation = operation.substring(1);
+		genIntStr += arithmeticOperation.charAt(0);
+		if(arithmeticOperation.length() != 0)
+			arithmeticOperation = arithmeticOperation.substring(1);
 		if(printTwice){
-			genIntStr += operation.charAt(0);
-			if(operation.length() != 0)
-				operation = operation.substring(1);
+			genIntStr += arithmeticOperation.charAt(0);
+			if(arithmeticOperation.length() != 0)
+				arithmeticOperation = arithmeticOperation.substring(1);
 			printTwice = false;	
 		}	
 	}
@@ -528,8 +651,10 @@ public class variable{
 			return;
 		System.out.println("Enter parenthesis");
 		
+		
+	
 		genIntStr += "(";
-		operation = ")" + operation;
+		arithmeticOperation = ")" + arithmeticOperation;
 		
 	
 	}
@@ -539,9 +664,9 @@ public class variable{
 			return;
 		//skipCount = 1;
 		
-		genIntStr += operation.charAt(0);
-		if(operation.length() != 0)
-			operation = operation.substring(1);
+		genIntStr += arithmeticOperation.charAt(0);
+		if(arithmeticOperation.length() != 0)
+			arithmeticOperation = arithmeticOperation.substring(1);
 		
 		System.out.println("Exit parenthesis");
 	}
@@ -558,13 +683,14 @@ public class variable{
 		System.out.println("Enter addition");
 		operationCount++;
 		
-		operation = "+" + operation;
+		arithmeticOperation = "+" + arithmeticOperation;
 	}
 	
 	@Override 
 	public void exitAddition(KnightCodeParser.AdditionContext ctx){ 
 		if(exit)
 			return;
+		System.out.println("Is it here?");	
 			
 		operationCount--;	
 
@@ -585,7 +711,7 @@ public class variable{
 	
 		System.out.println("Enter multiplication");
 		operationCount++;
-		operation = "*" + operation;
+		arithmeticOperation = "*" + arithmeticOperation;
 	
 	}
 	@Override 
@@ -613,7 +739,7 @@ public class variable{
 	
 		System.out.println("Enter division");
 		operationCount++;
-		operation = "/"+operation;
+		arithmeticOperation = "/"+arithmeticOperation;
 	
 	}
 	@Override 
@@ -642,7 +768,7 @@ public class variable{
 			
 		System.out.println("Enter subtraction");
 		operationCount++;
-		operation = "-"+operation;
+		arithmeticOperation = "-"+ arithmeticOperation;
 	
 	}
 	@Override 
@@ -699,25 +825,25 @@ public class variable{
 				//System.out.println("compString equals >: " +compString.equals(">"));
 				mainVisitor.visitJumpInsn(IF_ICMPLE, label1);
 				//compString = "IF_ICMPLE"; 
-				operation = ">"+operation;
+				arithmeticOperation = ">"+arithmeticOperation;
 				
 			} else if(compString.equals("<")){
 				
 				mainVisitor.visitJumpInsn(IF_ICMPGE, label1);
 				//compString = "IF_ICMPGE"; 
-				operation = "<"+operation;
+				arithmeticOperation = "<"+arithmeticOperation;
 			
 			} else if(compString.equals("<>")){
 			
 				mainVisitor.visitJumpInsn(IF_ICMPEQ, label1);
 				//compString = "IF_ICMPEQ";
-				operation = "<>"+operation;
+				arithmeticOperation = "<>"+arithmeticOperation;
 			
 			} else if(compString.equals("=")){
 			
 				mainVisitor.visitJumpInsn(IF_ICMPNE, label1);
 				//compString = "IF_ICMPNE";	
-				operation = "="+operation;
+				arithmeticOperation = "="+arithmeticOperation;
 			
 			}
 			
@@ -828,45 +954,6 @@ public class variable{
 			
 	
 	*/
-	/*
-	public class intBool{
-		
-		public int caseId;
-		public boolean used = false;
-
-		public intBool(int num){
-			caseId = num;
-			
-		}
-	}
-	
-	
-	intBool[] ifArray = new intBool[10];
-	//int somethingRandom = ifArray.length
-	intBool thing0 = intBool(num);
-	intBool thing1 = intBool(num);
-	intBool thing2 = intBool(num);
-	intBool thing3 = intBool(num);
-	intBool thing4 = intBool(num);
-	intBool thing5 = intBool(num);
-	intBool thing6 = intBool(num);
-	intBool thing7 = intBool(num);
-	intBool thing8 = intBool(num);
-	intBool thing9 = intBool(num);
-	ifArray[0] = thing0;
-	ifArray[1] = thing1;
-	ifArray[2] = thing2;
-	ifArray[3] = thing3;
-	ifArray[4] = thing4;
-	ifArray[5] = thing5;
-	ifArray[6] = thing6;
-	ifArray[7] = thing7;
-	ifArray[8] = thing8;
-	ifArray[9] = thing9;
-
-	public intBool currentIntBool;
-	
-	*/
 	
 	public static int ifCount1 = 0;
 	public static int elseCount1 = 0;
@@ -889,11 +976,11 @@ public class variable{
 		System.out.println("Enter Decision");
 		if(decLabCount > 8){
 		
-			System.out.println("------------------------------------------");
+			System.out.println("\n\n------------------------------------------");
 			System.out.println("COMPILER ERROR");
 			System.out.println("------------------------------------------");
 			
-			System.out.println("Too many If-Else statements, compiler can only handle 5 or less!");
+			System.out.println("Too many If-Else statements, compiler can only handle 10 or less!");
 			exit = true;
 			return;
 
@@ -926,7 +1013,7 @@ public class variable{
 		decCount = ctx.getChildCount();
 		if(decCount < 7){
 		
-			System.out.println("------------------------------------------");
+			System.out.println("\n\n------------------------------------------");
 			System.out.println("COMPILER ERROR");
 			System.out.println("------------------------------------------");
 			
@@ -942,7 +1029,7 @@ public class variable{
 		
 		if(!ctx.getChild(0).getText().equalsIgnoreCase("IF")){
 		
-			System.out.println("------------------------------------------");
+			System.out.println("\n\n------------------------------------------");
 			System.out.println("COMPILER ERROR");
 			System.out.println("------------------------------------------");
 			
@@ -955,7 +1042,7 @@ public class variable{
 		}
 		if(!ctx.getChild(4).getText().equalsIgnoreCase("THEN")){
 		
-			System.out.println("------------------------------------------");
+			System.out.println("\n\n------------------------------------------");
 			System.out.println("COMPILER ERROR");
 			System.out.println("------------------------------------------");
 			
@@ -968,7 +1055,7 @@ public class variable{
 		}
 		if(ctx.getChild(decCount-2).getText().equalsIgnoreCase("ELSE")||ctx.getChild(5).getText().equalsIgnoreCase("ELSE")){
 		
-				System.out.println("------------------------------------------");
+				System.out.println("\n\n------------------------------------------");
 				System.out.println("COMPILER ERROR");
 				System.out.println("------------------------------------------");
 			
@@ -980,7 +1067,7 @@ public class variable{
 		}	
 		if(!ctx.getChild(decCount-1).getText().equalsIgnoreCase("ENDIF")){
 		
-			System.out.println("------------------------------------------");
+			System.out.println("\n\n------------------------------------------");
 			System.out.println("COMPILER ERROR");
 			System.out.println("------------------------------------------");
 			
@@ -999,7 +1086,7 @@ public class variable{
 			
 			if(!var1.valueSet||var1.variableType.equalsIgnoreCase(STR)){
 				
-				System.out.println("------------------------------------------");
+				System.out.println("\n\n------------------------------------------");
 				System.out.println("COMPILER ERROR");
 				System.out.println("------------------------------------------");
 			
@@ -1023,7 +1110,7 @@ public class variable{
             			
        		     } catch(NumberFormatException e){
         			//System.out.println(e.getMessage());
-        			System.out.println("------------------------------------------");
+        			System.out.println("\n\n------------------------------------------");
 				System.out.println("COMPILER ERROR");
 				System.out.println("------------------------------------------");
 			
@@ -1043,7 +1130,7 @@ public class variable{
 
 			if(!var2.valueSet || var2.variableType.equalsIgnoreCase(STR)){
 				
-				System.out.println("------------------------------------------");
+				System.out.println("\n\n------------------------------------------");
 				System.out.println("COMPILER ERROR");
 				System.out.println("------------------------------------------");
 			
@@ -1063,7 +1150,7 @@ public class variable{
             			decOperator2 = Integer.valueOf(decOp2);
             			mainVisitor.visitIntInsn(SIPUSH, decOperator2);	
        		     } catch(NumberFormatException e){
-        			System.out.println("------------------------------------------");
+        			System.out.println("\n\n------------------------------------------");
 				System.out.println("COMPILER ERROR");
 				System.out.println("------------------------------------------");
 			
@@ -1087,7 +1174,8 @@ public class variable{
 			
 			
 		
-			prev = "THEN";		
+			prev = "THEN";	
+			String temporaryCounterString;	
 			tempInt = decCount-7;
 			//System.out.println("Temp int = " +tempInt);
 		if(tempInt > 0){
@@ -1096,6 +1184,27 @@ public class variable{
 		
 				if(ctx.getChild(decCount-tempInt-1).getText().equalsIgnoreCase("ELSE"))
 				prev = "ELSE";
+				
+				//NESTED LOOP STUFF inside of if-else
+				temporaryCounterString = ctx.getChild(decCount-tempInt-2).getText();
+				System.out.println(temporaryCounterString);
+				if(temporaryCounterString.length()>5)
+					temporaryCounterString = temporaryCounterString.substring(0,5);
+				//System.out.println(temporaryCounterString);
+				if(temporaryCounterString.equalsIgnoreCase("WHILE")){
+				
+					System.out.println("--------------------------------------------------------");
+					System.out.println("ifCount before addition: " + ifCount1);
+					
+					System.out.println("\nChild count: " + ctx.getChild(decCount-tempInt-2).getChild(0).getChildCount());
+					ifCount1 += (ctx.getChild(decCount-tempInt-2).getChild(0).getChildCount() - 6);
+					System.out.println("ifCount after addition: " + ifCount1);
+					System.out.println("--------------------------------------------------------");
+					
+				
+				}
+
+				
 				
 				//System.out.println("THEN statement!");	
 				ifCount1++;
@@ -1117,14 +1226,14 @@ public class variable{
 		} else {
 			ifCount1++;
 		}
-			//System.out.println("ifCount: " + ifCount1);
-			//System.out.println("elseCount: " + elseCount1);
+			System.out.println("ifCount: " + ifCount1);
+			System.out.println("elseCount: " + elseCount1);
 			
-		
 		
 		Label temp; 
 		Label tempEnd;
 		
+			
 			int currentUsage = Character.getNumericValue(decNestStack.charAt(0));
 			switch(currentUsage){
 				case 1: {
@@ -1183,7 +1292,7 @@ public class variable{
 				}
 				default: {
 				
-					System.out.println("------------------------------------------");
+					System.out.println("\n\n------------------------------------------");
 					System.out.println("COMPILER ERROR");
 					System.out.println("------------------------------------------");
 				
@@ -1208,7 +1317,7 @@ public class variable{
 		System.out.println("-------------------------------------------------------");
 		System.out.println(tempStringDecBla + temp);	
 		System.out.println("-------------------------------------------------------");
-		if(decCompSymbol.equals(">")){
+			if(decCompSymbol.equals(">")){
 				
 				//System.out.println("compString equals >: " +compString.equals(">"));
 				mainVisitor.visitJumpInsn(IF_ICMPLE, temp);
@@ -1236,6 +1345,217 @@ public class variable{
 			}
 	
 
+	}
+	
+	
+	
+	@Override 
+	public void exitDecision(KnightCodeParser.DecisionContext ctx){ 
+		if(exit)
+			return;
+		
+		System.out.println("decNestStack = " + decNestStack);	
+		//decCount2--;
+		//System.out.println("decCount2 = " + decCount2);
+		
+		//if(elseCount == 0){
+			Label temper; 	
+			Label temp;
+			int currentUsage = Character.getNumericValue(decNestStack.charAt(0));
+			
+			switch(currentUsage) {
+		
+				case 1: {
+					temp = endDecLab0;
+	temper = startOfElse0;	
+					break;
+				}
+				case 2: {
+					temp = endDecLab1;
+	temper = startOfElse1;	
+					break;
+				}
+				case 3: {
+					temp = endDecLab2;
+	temper = startOfElse1;	
+					break;
+				}
+				case 4: {
+					temp = endDecLab3;
+	temper = startOfElse1;	
+					break;
+				}
+				case 5: {
+					temp = endDecLab4;
+	temper = startOfElse1;	
+					break;
+				}
+				case 6: {
+	temper = startOfElse5;
+					temp = endDecLab5;
+					break;
+				}
+				case 7: { 
+	temper = startOfElse6;
+					temp = endDecLab6;
+					break;
+				
+				}
+				case 8: {
+	temper = startOfElse7;
+					temp = endDecLab7;
+					break;
+				
+				}
+				case 9: { 
+	temper = startOfElse8;
+					temp = endDecLab8;
+					break;
+				
+				}
+				case 10: { 
+	temper = startOfElse9;
+					temp = endDecLab9;
+					break;
+				
+				}
+				//case 6: { }
+				//case 7: { }
+				//case 8: { }
+				//case 9: { }
+				default: {
+	temper = startOfElse1;	
+			
+					System.out.println("\n\n------------------------------------------");
+					System.out.println("COMPILER ERROR");
+					System.out.println("------------------------------------------");
+				
+					System.out.println("Case 1: jump label failure for if-else statement at exit");
+					
+					exit = true;
+					return;
+				}	
+					
+			}
+			decCount2--;
+		//}
+		//System.out.println("decLabCount = " + decLabCount);
+		System.out.println("-------------------------------------------------------");
+		System.out.println("Visit end label dec= " + temp);
+		//System.out.println("else label = " + temper);
+		System.out.println("-------------------------------------------------------");
+		
+		//ASM
+		mainVisitor.visitLabel(temp);
+		
+		if(decNestStack.length() != 0)
+			decNestStack = decNestStack.substring(1);
+		System.out.println("Current stack = " + decNestStack);
+		
+		
+		if(elseCount1 > 0){
+		
+			//System.out.println("IT SHOULD ENTER HERE!");
+			System.out.println("elseCount : " + elseCount1);
+			
+			if(ifCount1 == 1){
+				//ifCount1--;
+				//Label temper; 
+				Label tempEnd;
+				
+				currentUsage = Character.getNumericValue(decNestStack.charAt(0));
+				//System.out.println("decLab - nestedDecLab: " + (decLabCount-nestedDecCount));
+				switch(currentUsage){
+					case 1: {
+						tempEnd = endDecLab0;
+						temper = startOfElse0;						
+						break;
+					}
+					case 2: {
+						tempEnd = endDecLab1;
+						temper = startOfElse1;
+						break;
+					}
+					case 3: {
+						tempEnd = endDecLab2;
+						temper = startOfElse2;						
+						break;
+					}
+					case 4: {
+						tempEnd = endDecLab3;
+						temper = startOfElse3;
+						break;
+					}
+					case 5: {
+						tempEnd = endDecLab4;
+						temper = startOfElse4;
+						break;
+					}
+					case 6: { 
+						tempEnd = endDecLab5;
+						temper = startOfElse5;
+						break;
+					
+					}
+					case 7: { 
+						tempEnd = endDecLab6;
+						temper = startOfElse6;
+						break;
+					
+					}
+					case 8: { 
+						tempEnd = endDecLab7;
+						temper = startOfElse7;
+						break;
+					
+					}
+					case 9: { 
+						tempEnd = endDecLab8;
+						temper = startOfElse8;
+						break;
+					
+					}
+					case 10: {
+						tempEnd = endDecLab9;
+						temper = startOfElse9;
+						break;
+					
+					}
+					default: {
+					
+						System.out.println("\n\n------------------------------------------");
+						System.out.println("COMPILER ERROR");
+						System.out.println("------------------------------------------");
+					
+						System.out.println("Case 2: jump label failure for if-else statement in exit decision!");
+						
+						exit = true;
+						return;
+					}	
+						
+				}
+				System.out.println("-------------------------------------------------------");	
+				System.out.println("GOTO, end label= " + tempEnd);
+				System.out.println("Visit startOfElse Label= " + temper);
+				System.out.println("-------------------------------------------------------");
+	
+				mainVisitor.visitJumpInsn(GOTO, tempEnd);
+				mainVisitor.visitLabel(temper);
+			
+			} else {
+				//System.out.println("DOES THIS EVEN HAPPEN????");
+				//System.out.println("ifCount = " + ifCount);
+				//ifCount1--;
+			}
+					
+		}
+		if(ifCount1 > 0)
+			ifCount1--;
+		//System.out.println("ifCount = " + ifCount1);
+		
+		System.out.println("ifCount = " + ifCount1);
+			
+		System.out.println("Exit Decision");
 	}
 	
 	
@@ -1311,6 +1631,7 @@ public class variable{
 		
 		if(elseCount1 > 0){
 		
+		
 			
 			//System.out.println("elseCount : " + elseCount1);
 			
@@ -1320,7 +1641,8 @@ public class variable{
 			
 				Label temper; 
 				Label tempEnd;
-				switch(decLabCount){
+		 		int currentUsage = Character.getNumericValue(decNestStack.charAt(0));
+				switch(currentUsage){
 					case 1: {
 						tempEnd = endDecLab0;
 						temper = startOfElse0;						
@@ -1377,7 +1699,7 @@ public class variable{
 					}
 					default: {
 					
-						System.out.println("------------------------------------------");
+						System.out.println("\n\n------------------------------------------");
 						System.out.println("COMPILER ERROR");
 						System.out.println("------------------------------------------");
 					
@@ -1395,6 +1717,10 @@ public class variable{
 	
 				mainVisitor.visitJumpInsn(GOTO, tempEnd);
 				mainVisitor.visitLabel(temper);
+				
+				//if(decNestStack.length() != 0)
+				//	decNestStack = decNestStack.substring(1);
+				System.out.println("Current stack = " + decNestStack);
 			
 			} else {
 				//System.out.println("DID THIS NOT HAPPEN???");
@@ -1406,125 +1732,137 @@ public class variable{
 		if(ifCount1 > 0)
 			ifCount1--;
 		System.out.println("ifCount = " + ifCount1);
+		System.out.println("decNestStack = " + decNestStack);
 		System.out.println("Exit print");
 	}
 	
 	
+	
+	
+		
+		
+	public boolean alreadyRead = false;
+	public int readStoredLocation;
+	/**
+	 * Read
+	 *
+	 *
+	 */
 	@Override 
-	public void exitDecision(KnightCodeParser.DecisionContext ctx){ 
+	public void enterRead(KnightCodeParser.ReadContext ctx){ 
+		if(exit)
+			return;
+		System.out.println("Enter read\n");
+		
+		
+		if(ctx.getChild(1) != null)
+			key = ctx.getChild(1).getText();
+			
+		System.out.println("\n"+key);	
+		if(SymbolTable.containsKey(key)){
+			currvar = SymbolTable.get(key);
+		} else {
+			System.out.println("\n\n------------------------------------------");
+			System.out.println("COMPILER ERROR");
+			System.out.println("------------------------------------------");
+			
+			System.out.println("Identifier: " + key + " was not declared");
+			exit = true;
+			return;
+		
+		}
+		
+		
+		/*
+		
+	    methodVisitor.visitTypeInsn(NEW, "java/util/Scanner");
+            methodVisitor.visitInsn(DUP);
+            methodVisitor.visitFieldInsn(GETSTATIC,"java/lang/System", "in", "Ljava/io/InputStream;");
+            methodVisitor.visitMethodInsn(INVOKESPECIAL, "java/util/Scanner", "<init>", "(Ljava/io/InputStream;)V" , false);
+            methodVisitor.visitVarInsn(ASTORE,store);
+		
+		*/
+
+
+		if(alreadyRead){
+			
+		
+		
+		} else {
+			alreadyRead = true;
+			
+			readStoredLocation = memoryCounter;
+		
+			mainVisitor.visitTypeInsn(NEW, "java/util/Scanner");
+            		mainVisitor.visitInsn(DUP);
+            		mainVisitor.visitFieldInsn(GETSTATIC,"java/lang/System", "in", "Ljava/io/InputStream;");
+            		mainVisitor.visitMethodInsn(INVOKESPECIAL, "java/util/Scanner", "<init>", "(Ljava/io/InputStream;)V" , false);
+            		mainVisitor.visitVarInsn(ASTORE,readStoredLocation);
+		
+		
+			memoryCounter++;
+			
+		}
+		
+		
+		
+
+	
+	}
+	
+	
+	@Override 
+	public void exitRead(KnightCodeParser.ReadContext ctx){ 
 		if(exit)
 			return;
 			
-		//decCount2--;
-		//System.out.println("decCount2 = " + decCount2);
-		
-		//if(elseCount == 0){
-			Label temper; 	
-			Label temp;
-			int currentUsage = Character.getNumericValue(decNestStack.charAt(0));
 			
-			switch(currentUsage) {
+	
+	
 		
-				case 1: {
-					temp = endDecLab0;
-	temper = startOfElse0;	
-					break;
-				}
-				case 2: {
-					temp = endDecLab1;
-	temper = startOfElse1;	
-					break;
-				}
-				case 3: {
-					temp = endDecLab2;
-	temper = startOfElse1;	
-					break;
-				}
-				case 4: {
-					temp = endDecLab3;
-	temper = startOfElse1;	
-					break;
-				}
-				case 5: {
-					temp = endDecLab4;
-	temper = startOfElse1;	
-					break;
-				}
-				case 6: {
-	temper = startOfElse5;
-					temp = endDecLab5;
-					break;
-				}
-				case 7: { 
-	temper = startOfElse6;
-					temp = endDecLab6;
-					break;
-				
-				}
-				case 8: {
-	temper = startOfElse7;
-					temp = endDecLab7;
-					break;
-				
-				}
-				case 9: { 
-	temper = startOfElse8;
-					temp = endDecLab8;
-					break;
-				
-				}
-				case 10: { 
-	temper = startOfElse9;
-					temp = endDecLab9;
-					break;
-				
-				}
-				//case 6: { }
-				//case 7: { }
-				//case 8: { }
-				//case 9: { }
-				default: {
-	temper = startOfElse1;	
+		System.out.println("ALOAD, readStoredLocation");
+		mainVisitor.visitVarInsn(ALOAD,readStoredLocation);
+		
+          	
+	
+		genBool = isString(currvar);
 			
-					System.out.println("------------------------------------------");
-					System.out.println("COMPILER ERROR");
-					System.out.println("------------------------------------------");
-				
-					System.out.println("jump label failure for if-else statement at exit");
-					
-					exit = true;
-					return;
-				}	
-					
-			}
-			decCount2--;
-		//}
-		//System.out.println("decLabCount = " + decLabCount);
-		System.out.println("-------------------------------------------------------");
-		System.out.println("Visit end label dec= " + temp);
-		//System.out.println("else label = " + temper);
-		System.out.println("-------------------------------------------------------");
+		if(genBool){
+	
+			System.out.println("INVOKEVIRTUAL, nextLine");
+			System.out.println("ASTORE, " + currvar.memLoc);
+			
+			mainVisitor.visitMethodInsn(INVOKEVIRTUAL, "java/util/Scanner", "nextLine", "()Ljava/lang/String;", false);
+			mainVisitor.visitVarInsn(ASTORE,currvar.memLoc);
+			
+			//mainVisitor.visitLdcInsn(currvar.value);
+			
+		} else {
 		
-		//ASM
-		mainVisitor.visitLabel(temp);
+			System.out.println("INVOKEVIRTUAL, nextInt");
+			System.out.println("ISTORE, " + currvar.memLoc);
+			
+			mainVisitor.visitMethodInsn(INVOKEVIRTUAL, "java/util/Scanner", "nextInt", "()I", false);
+			mainVisitor.visitVarInsn(ISTORE,currvar.memLoc);
+		}
 		
-		if(decNestStack.length() != 0)
-			decNestStack = decNestStack.substring(1);
-		System.out.println("Current stack = " + decNestStack);
+		//currvar.value = "Value read from input";
+		currvar.valueSet = true;
+		SymbolTable.put(key, currvar);
 		
-		System.out.println("ifCount = " + ifCount1);
+		
 		if(elseCount1 > 0){
 		
-			//System.out.println("IT SHOULD ENTER HERE!");
-			System.out.println("elseCount : " + elseCount1);
+			
+			//System.out.println("elseCount : " + elseCount1);
 			
 			if(ifCount1 == 1){
 				//ifCount1--;
-				//Label temper; 
-				Label tempEnd;
 				
-				currentUsage = Character.getNumericValue(decNestStack.charAt(0));
-				//System.out.println("decLab - nestedDecLab: " + (decLabCount-nestedDecCount));
+			
+				Label temper; 
+				Label tempEnd;
+		 		int currentUsage = Character.getNumericValue(decNestStack.charAt(0));
 				switch(currentUsage){
 					case 1: {
 						tempEnd = endDecLab0;
@@ -1551,17 +1889,42 @@ public class variable{
 						temper = startOfElse4;
 						break;
 					}
-					//case 6: { }
-					//case 7: { }
-					//case 8: { }
-					//case 9: { }
+					case 6: {						
+						tempEnd = endDecLab5;
+						temper = startOfElse5;
+						break;
+					}
+					case 7: { 						
+						tempEnd = endDecLab6;
+						temper = startOfElse6;
+						break;
+				
+					}
+					case 8: {
+						tempEnd = endDecLab7;
+						temper = startOfElse7;
+						break;
+				
+					}
+					case 9: { 
+						tempEnd = endDecLab8;
+						temper = startOfElse8;
+						break;
+					
+					}
+					case 10: { 
+						tempEnd = endDecLab9;
+						temper = startOfElse9;
+						break;
+				
+					}
 					default: {
 					
-						System.out.println("------------------------------------------");
+						System.out.println("\n\n------------------------------------------");
 						System.out.println("COMPILER ERROR");
 						System.out.println("------------------------------------------");
 					
-						System.out.println("jump label failure for if-else statement in exit decision!");
+						System.out.println("jump label failure for if-else statement in print!");
 						
 						exit = true;
 						return;
@@ -1575,90 +1938,66 @@ public class variable{
 	
 				mainVisitor.visitJumpInsn(GOTO, tempEnd);
 				mainVisitor.visitLabel(temper);
+				
+				//if(decNestStack.length() != 0)
+				//	decNestStack = decNestStack.substring(1);
+				System.out.println("Current stack = " + decNestStack);
 			
 			} else {
-				//System.out.println("DOES THIS EVEN HAPPEN????");
-				//System.out.println("ifCount = " + ifCount);
+				//System.out.println("DID THIS NOT HAPPEN???");
 				//ifCount1--;
 			}
-					
+			
+		
 		}
 		if(ifCount1 > 0)
 			ifCount1--;
-		//System.out.println("ifCount = " + ifCount1);
+		System.out.println("ifCount = " + ifCount1);
 		
+		System.out.println("Exit read\n");
 		
-			
-		System.out.println("Exit Decision");
+
 	}
-	
-	
-		//while
-			
-		/*
-		0 = IF
 
-		1 = x
-
-		2 = comp
 	
-		3 = y
-		
-		4 = THEN
-
-		5 = 1_stat (1 or more)
+	public int loopLabCount = 0;
+	public int loopCount = 0;
 	
-		(6 or more) = ELSE
+	public String loopOp1;
+	public int loopOperator1;
+	public String loopOp2;
+	public int loopOperator2;
 	
-		(7 or more) = 2_stat (1 or more)
+	public String loopCompSymbol;
 	
-		(8 or more)	
-		decCount = ENDIF 
-		
-		/*	
-		if(ifCount == 1){
-			System.out.println("Here should be label and GOTO");
-			mainVisitor.visitJumpInsn(GOTO, secondPart);
-			mainVisitor.visitLabel(printSkipIf);
-		}
-		if(ifCount != 0){	
-			System.out.println("ifCount--");
-			ifCount--;
-		} else {
-			System.out.println("elseCount--");
-			elseCount--;
-		}
-		*/
-		/*
-		if(elseCount == 0){
-				System.out.println("Here should be label only");
-				mainVisitor.visitLabel(secondPart);
-		}
-		
-				
-		*/
-		//mainVisitor.visitLabel(printskip2);
-
-
-		
+	public String loopNestStack = "000";	
 	
-	/**
-	 * Read
-	 *
-	 *
-	 */
-	@Override 
-	public void enterRead(KnightCodeParser.ReadContext ctx){ 
 	
-	}
-	@Override 
-	public void exitRead(KnightCodeParser.ReadContext ctx){ 
+	Label endOfloop0 = new Label();
+	Label endOfloop1 = new Label();
+	Label endOfloop2 = new Label();
+	Label endOfloop3 = new Label();
+	Label endOfloop4 = new Label();
+	Label endOfloop5 = new Label();
+	Label endOfloop6 = new Label();
+	Label endOfloop7 = new Label();
+	Label endOfloop8 = new Label();
+	Label endOfloop9 = new Label();
 	
-	}
+	Label startOfloop0 = new Label();
+	Label startOfloop1 = new Label();
+	Label startOfloop2 = new Label();
+	Label startOfloop3 = new Label();
+	Label startOfloop4 = new Label();
+	Label startOfloop5 = new Label();
+	Label startOfloop6 = new Label();
+	Label startOfloop7 = new Label();
+	Label startOfloop8 = new Label();
+	Label startOfloop9 = new Label();
 	
 	
 	
-
+	
 	/**
 	 * Loop
 	 *
@@ -1666,11 +2005,499 @@ public class variable{
 	 */
 	@Override 
 	public void enterLoop(KnightCodeParser.LoopContext ctx){ 
+		if(exit)
+			return;
+		System.out.println("Enter loop");
+		
+		if(loopLabCount > 9){
+		
+			System.out.println("\n\n------------------------------------------");
+			System.out.println("COMPILER ERROR");
+			System.out.println("------------------------------------------");
+			
+			System.out.println("Too many While-loops, compiler can only handle 10 or less!");
+			exit = true;
+			return;
+
+		} else {
+			loopLabCount++;	
+			loopCount++;		
+		}
+		loopNestStack = loopLabCount + loopNestStack;
+		System.out.println("Current stack = " + loopNestStack);	
 	
+		/*
+		decNestStack = decLabCount + decNestStack;
+		System.out.println("Current stack = " + decNestStack);
+		*/
+		int syntaxTest = ctx.getChildCount();
+		if(syntaxTest < 7){
+		
+			System.out.println("\n\n------------------------------------------");
+			System.out.println("COMPILER ERROR");
+			System.out.println("------------------------------------------");
+			
+			System.out.println("Syntax is wrong for If-Else statement!");
+			
+			exit = true;
+			return;
+		
+		
+		}
+		
+		//IF
+		
+		if(!ctx.getChild(0).getText().equalsIgnoreCase("WHILE")){
+		
+			System.out.println("\n\n------------------------------------------");
+			System.out.println("COMPILER ERROR");
+			System.out.println("------------------------------------------");
+			
+			System.out.println("Syntax is wrong for while loop");
+			
+			exit = true;
+			return;
+		
+		
+		}
+		if(!ctx.getChild(4).getText().equalsIgnoreCase("DO")){
+		
+			System.out.println("\n\n------------------------------------------");
+			System.out.println("COMPILER ERROR");
+			System.out.println("------------------------------------------");
+			
+			System.out.println("Syntax is wrong for while-loop! after comparison must come \"DO\"");
+			
+			exit = true;
+			return;
+		
+		
+		}
+		if(!ctx.getChild(syntaxTest-1).getText().equalsIgnoreCase("ENDWHILE")){
+		
+				System.out.println("\n\n------------------------------------------");
+				System.out.println("COMPILER ERROR");
+				System.out.println("------------------------------------------");
+			
+				//System.out.println("ELSE");
+				System.out.println("Syntax is wrong for while-loop, must end with \"ENDWHILE\"");
+			
+				exit = true;
+				return;	
+		}	
+		
+		Label temp; 
+		Label tempEnd;
+		
+			
+			int currentUsage = Character.getNumericValue(loopNestStack.charAt(0));
+			switch(currentUsage){
+				case 1: {
+					temp = startOfloop0;
+					tempEnd = endOfloop0;
+					break;
+				}
+				case 2: {
+					temp = startOfloop1;
+					tempEnd = endOfloop1;
+					break;
+				}
+				case 3: {
+					temp = startOfloop2;
+					tempEnd = endOfloop2;
+					break;
+				}
+				case 4: {
+					temp = startOfloop3;
+					tempEnd = endOfloop3;
+					break;
+				}
+				case 5: {
+					temp = startOfloop4;
+					tempEnd = endOfloop4;
+					break;
+				}
+				case 6: {
+					temp = startOfloop5;
+					tempEnd = endOfloop5;
+					break;
+				}
+				case 7: { 
+					temp = startOfloop6;
+					tempEnd = endOfloop6;
+					break;
+				
+				}
+				case 8: {
+					temp = startOfloop7;
+					tempEnd = endOfloop7;
+					break;
+				
+				}
+				case 9: { 
+					temp = startOfloop8;
+					tempEnd = endOfloop8;
+					break;
+				
+				}
+				case 10: { 
+					temp = startOfloop9;
+					tempEnd = endOfloop9;
+					break;
+				
+				}
+				default: {
+				
+					System.out.println("\n\n------------------------------------------");
+					System.out.println("COMPILER ERROR");
+					System.out.println("------------------------------------------");
+				
+					System.out.println("jump label failure for loop at enter!");
+					
+					exit = true;
+					return;
+				}		
+			}
+		
+		//ASM stuff
+		mainVisitor.visitLabel(temp);
+		
+		//String loopOp1;
+		//int loopOperator1;
+		//String loopOp2;
+		//int loopOperator2;
+		//String loopCompSymbol;
+		
+		loopOp1 = ctx.getChild(1).getText();
+		if(SymbolTable.containsKey(loopOp1)){
+			var1 = SymbolTable.get(loopOp1);
+			
+			if(!var1.valueSet||var1.variableType.equalsIgnoreCase(STR)){
+				
+				System.out.println("\n\n------------------------------------------");
+				System.out.println("COMPILER ERROR");
+				System.out.println("------------------------------------------");
+			
+				System.out.println("Comparison failed!");
+				System.out.println("ID: " + loopOp1 + " value has not been set, or ID is a String!");
+				
+				exit = true;
+				return;
+        			
+				
+			}
+			
+			operator1 = var1.memLoc;
+			mainVisitor.visitIntInsn(ILOAD, operator1);
+		} else {
+			try{
+            			
+            			loopOperator1 = Integer.valueOf(loopOp1);
+            			mainVisitor.visitIntInsn(SIPUSH, loopOperator1);
+            			
+            			
+       		     } catch(NumberFormatException e){
+        			//System.out.println(e.getMessage());
+        			System.out.println("\n\n------------------------------------------");
+				System.out.println("COMPILER ERROR");
+				System.out.println("------------------------------------------");
+			
+				System.out.println("Comparison failed!");
+				System.out.println("ID: " + loopOp1 + " does not exist, is not assigned a value or is not a valid integer.");
+				
+				exit = true;
+				return;
+        			
+        		     }
+		
+		}
+		
+		loopOp2 = ctx.getChild(3).getText();
+		if(SymbolTable.containsKey(loopOp2)){
+			var2 = SymbolTable.get(loopOp2);
+
+			if(!var2.valueSet || var2.variableType.equalsIgnoreCase(STR)){
+				
+				System.out.println("\n\n------------------------------------------");
+				System.out.println("COMPILER ERROR");
+				System.out.println("------------------------------------------");
+			
+				System.out.println("Comparison failed!");
+				System.out.println("ID: " + loopOp1 + " value has not been set, or ID is a String!");
+				
+				exit = true;
+				return;	
+			}
+			
+			operator2 = var2.memLoc;
+			mainVisitor.visitIntInsn(ILOAD, operator2);
+		} else {
+		
+			  try{
+            			
+            			loopOperator2 = Integer.valueOf(loopOp2);
+            			mainVisitor.visitIntInsn(SIPUSH, loopOperator2);	
+       		     } catch(NumberFormatException e){
+        			System.out.println("\n\n------------------------------------------");
+				System.out.println("COMPILER ERROR");
+				System.out.println("------------------------------------------");
+			
+				System.out.println("Comparison failed!");
+				System.out.println("ID: " + loopOp2 + " does not exist, is not assigned a value or is not a valid integer.");
+				
+				exit = true;
+				return;
+        			
+        		     }	
+		}		
+			
+		loopCompSymbol = ctx.getChild(2).getChild(0).getText();
+	
+		if(loopCompSymbol.equals(">")){
+				
+				//System.out.println("compString equals >: " +compString.equals(">"));
+				mainVisitor.visitJumpInsn(IF_ICMPLE, tempEnd);
+				//compString = "IF_ICMPLE"; 
+				//operation = ">"+operation;
+				
+			} else if(decCompSymbol.equals("<")){
+				
+				mainVisitor.visitJumpInsn(IF_ICMPGE,tempEnd);
+				//compString = "IF_ICMPGE"; 
+				//operation = "<"+operation;
+			
+			} else if(decCompSymbol.equals("<>")){
+			
+				mainVisitor.visitJumpInsn(IF_ICMPEQ, tempEnd);
+				//compString = "IF_ICMPEQ";
+				//operation = "<>"+operation;
+			
+			} else if(decCompSymbol.equals("=")){
+			
+				mainVisitor.visitJumpInsn(IF_ICMPNE, tempEnd);
+				//compString = "IF_ICMPNE";	
+				//operation = "="+operation;
+			
+			}
+			
+			System.out.println("-------------------------------------------------------");
+			System.out.println("Visit Start of loop label = " + temp);
+			System.out.println("IFICMP, " + tempEnd);
+			System.out.println("-------------------------------------------------------");
+			
+		
 	}
+	
+	
 	@Override 
 	public void exitLoop(KnightCodeParser.LoopContext ctx){ 
+		if(exit)
+			return;
+			
+			
+				
+			Label temp;
+			Label temper;
+			int currentUsage = Character.getNumericValue(loopNestStack.charAt(0));
+			
+			switch(currentUsage) {
+		
+				case 1: {
+					temp = endOfloop0;
+					temper = startOfloop0;
+					break;
+				}
+				case 2: {
+					temp = endOfloop1;
+					temper = startOfloop1;
+					break;
+				}
+				case 3: {
+					temp = endOfloop2;
+					temper = startOfloop2;
+					break;
+				}
+				case 4: {
+					temp = endOfloop3;
+					temper = startOfloop3;
+					break;
+				}
+				case 5: {
+					temp = endOfloop4;
+					temper = startOfloop4;
+					break;
+				}
+				case 6: {
+					temp = endOfloop5;
+					temper = startOfloop5;
+					break;
+				}
+				case 7: { 
+					temp = endOfloop6;
+					temper = startOfloop6;
+					break;
+				
+				}
+				case 8: {
+					temp = endOfloop7;
+					temper = startOfloop7;
+					break;
+				
+				}
+				case 9: {
+					temp = endOfloop8;
+					temper = startOfloop8;
+					break;
+				
+				}
+				case 10: { 
+					temp = endOfloop9;
+					temper = startOfloop9;
+					break;
+				
+				}
+				//case 6: { }
+				//case 7: { }
+				//case 8: { }
+				//case 9: { }
+				default: {
 	
+			
+					System.out.println("\n\n------------------------------------------");
+					System.out.println("COMPILER ERROR");
+					System.out.println("------------------------------------------");
+				
+					System.out.println("jump label failure for if-else statement at exit");
+					
+					exit = true;
+					return;
+				}	
+					
+			}
+			
+		
+		System.out.println("-------------------------------------------------------");
+		System.out.println("GOTO = " + temper);
+		System.out.println("Visit end label loop = " + temp);
+		System.out.println("-------------------------------------------------------");
+		
+		//ASM
+		mainVisitor.visitJumpInsn(GOTO,temper);
+		mainVisitor.visitLabel(temp);
+		
+		/*
+		if(decNestStack.length() != 0)
+			decNestStack = decNestStack.substring(1);
+		*/
+		System.out.println("Current stack = " + decNestStack);	
+			
+			
+		if(elseCount1 > 0){
+		
+			
+			//System.out.println("elseCount : " + elseCount1);
+			
+			if(ifCount1 == 1){
+				System.out.println("ifCount1 = " + ifCount1);
+				
+			
+				//Label temper; 
+				Label tempEnd;
+		 		currentUsage = Character.getNumericValue(decNestStack.charAt(0));
+				switch(currentUsage){
+					case 1: {
+						tempEnd = endDecLab0;
+						temper = startOfElse0;						
+						break;
+					}
+					case 2: {
+						tempEnd = endDecLab1;
+						temper = startOfElse1;
+						break;
+					}
+					case 3: {
+						tempEnd = endDecLab2;
+						temper = startOfElse2;						
+						break;
+					}
+					case 4: {
+						tempEnd = endDecLab3;
+						temper = startOfElse3;
+						break;
+					}
+					case 5: {
+						tempEnd = endDecLab4;
+						temper = startOfElse4;
+						break;
+					}
+					case 6: {						
+						tempEnd = endDecLab5;
+						temper = startOfElse5;
+						break;
+					}
+					case 7: { 						
+						tempEnd = endDecLab6;
+						temper = startOfElse6;
+						break;
+				
+					}
+					case 8: {
+						tempEnd = endDecLab7;
+						temper = startOfElse7;
+						break;
+				
+					}
+					case 9: { 
+						tempEnd = endDecLab8;
+						temper = startOfElse8;
+						break;
+					
+					}
+					case 10: { 
+						tempEnd = endDecLab9;
+						temper = startOfElse9;
+						break;
+				
+					}
+					default: {
+					
+						System.out.println("\n\n------------------------------------------");
+						System.out.println("COMPILER ERROR");
+						System.out.println("------------------------------------------");
+					
+						System.out.println("jump label failure for if-else statement in print!");
+						
+						exit = true;
+						return;
+					}	
+						
+				}
+				System.out.println("-------------------------------------------------------");	
+				System.out.println("GOTO, end label= " + tempEnd);
+				System.out.println("Visit startOfElse Label= " + temper);
+				System.out.println("-------------------------------------------------------");
+	
+				mainVisitor.visitJumpInsn(GOTO, tempEnd);
+				mainVisitor.visitLabel(temper);
+				
+				//if(decNestStack.length() != 0)
+				//	decNestStack = decNestStack.substring(1);
+				System.out.println("Current stack = " + decNestStack);
+			
+			} else {
+				//System.out.println("DID THIS NOT HAPPEN???");
+				//ifCount1--;
+			}
+			
+		
+		}
+		if(ifCount1 > 0)
+			ifCount1--;
+		System.out.println("ifCount = " + ifCount1);	
+			
+			
+			
+		System.out.println("Exit loop");
 	}
 	
 	

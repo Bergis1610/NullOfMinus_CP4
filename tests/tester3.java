@@ -1,8 +1,32 @@
 package tests;
 
+import java.util.*;
+
 public class tester3{
 
+
 	public static void main(String[]args){
+	
+	
+		int x;
+		
+		
+		System.out.println("Enter a number");
+		Scanner scan = new Scanner(System.in);
+		x = scan.nextInt();
+		
+		while(x > 0){
+			System.out.println(x);
+			x = x - 1;
+		}
+		
+		
+	
+	
+	
+	
+	
+	
 	
 	
 	/*
@@ -12,12 +36,23 @@ public class tester3{
 		int e = 13;
 		int z = x+y+f+e;
 	*/
-	
-		int x = 1;
-		int y = 0;
-		int z;
+	/*
+		String x;
+		//int y;
+		//int y = 0;
+		//int z;
 		
+		System.out.println("ENTER A STRING: ");
+		
+		Scanner scan = new Scanner(System.in);
+		x = scan.nextLine();//scan.nextLine();
 	
+		System.out.println(x);
+	*/	
+	
+		//y = scan.nextInt();//scan.nextLine();	
+		//System.out.println(y);
+	/*
 		if(x>y){
 		
 			System.out.println("CORRECT");	
@@ -27,6 +62,7 @@ public class tester3{
 			System.out.println("WRONG");
 		
 		}
+*/
 	
 	
 		
