@@ -44,9 +44,10 @@ public class comptest{
             
             //System.out.println(tree.toStringTree(parser));
             
-            myListener2 listener = new myListener2("output1");
+         
 	    ParseTreeWalker walker = new ParseTreeWalker();
-	    walker.walk(listener, tree);
+	    myVisitor visitor = new myVisitor();
+	   visitor.visit(tree);
             
         
         }

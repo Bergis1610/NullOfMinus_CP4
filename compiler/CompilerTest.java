@@ -79,8 +79,8 @@ public class CompilerTest{
 	    walker.walk(listener, tree);
 	    */
 	    
-	  // myVisitor visitor = new myVisitor();
-	  // visitor.visit(tree);  
+	  myVisitor visitor = new myVisitor();
+	   visitor.visit(tree);  
 	  
 	  
             
