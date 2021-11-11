@@ -1823,6 +1823,7 @@ public class variable{
 		System.out.println("ALOAD, readStoredLocation");
 		mainVisitor.visitVarInsn(ALOAD,readStoredLocation);
 		
+		
           	
 	
 		genBool = isString(currvar);
@@ -1844,6 +1845,10 @@ public class variable{
 			
 			mainVisitor.visitMethodInsn(INVOKEVIRTUAL, "java/util/Scanner", "nextInt", "()I", false);
 			mainVisitor.visitVarInsn(ISTORE,currvar.memLoc);
+			
+			mainVisitor.visitVarInsn(ALOAD,readStoredLocation);
+			mainVisitor.visitMethodInsn(INVOKEVIRTUAL, "java/util/Scanner", "nextLine", "()Ljava/lang/String;", false);
+			mainVisitor.visitInsn(POP);
 		}
 		
 		//currvar.value = "Value read from input";
@@ -1953,6 +1958,8 @@ public class variable{
 		if(ifCount1 > 0)
 			ifCount1--;
 		System.out.println("ifCount = " + ifCount1);
+		
+		
 		
 		System.out.println("Exit read\n");
 		
@@ -2385,11 +2392,11 @@ public class variable{
 		mainVisitor.visitJumpInsn(GOTO,temper);
 		mainVisitor.visitLabel(temp);
 		
-		/*
-		if(decNestStack.length() != 0)
-			decNestStack = decNestStack.substring(1);
-		*/
-		System.out.println("Current stack = " + decNestStack);	
+		  
+		if(loopNestStack.length() != 0)
+			loopNestStack = loopNestStack.substring(1);
+		
+		System.out.println("Current stack = " + loopNestStack);	
 			
 			
 		if(elseCount1 > 0){
@@ -2501,15 +2508,6 @@ public class variable{
 	}
 	
 	
-	
-	
-	
-	
-	
-
-	
-
-
 	/**
 	 * Prints context string. Used for debugging purposes
 	 * @param ctx

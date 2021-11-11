@@ -8,17 +8,25 @@ public class tester3{
 	public static void main(String[]args){
 	
 	
-		int x;
+		//int x;
 		
 		
-		System.out.println("Enter a number");
+		
+		//System.out.println("Enter a number");
 		Scanner scan = new Scanner(System.in);
-		x = scan.nextInt();
 		
+		
+		String v;
+		v = scan.nextLine();
+		scan.nextLine();
+		//x = scan.nextInt();
+		
+		/*
 		while(x > 0){
 			System.out.println(x);
 			x = x - 1;
 		}
+		*/
 		
 		
 	
