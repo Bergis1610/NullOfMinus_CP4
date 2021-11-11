@@ -1,15 +1,11 @@
 PROGRAM tester4
-
+  
 DECLARE
 	INTEGER x
 	INTEGER y
 	INTEGER z
-	INTEGER u
-	#STRING name
-	STRING colour
-	
-	
-	#	INTEGER e
+
+
 
 	
 BEGIN
@@ -26,11 +22,18 @@ SET y := 0
 
 
 
+
 PRINT "Please type an integer"
 READ z
 
 IF
 	1 = z
+
+PRINT "Please type an integer: "
+READ z
+IF
+	z > 5
+
 	THEN 
 	
 	PRINT "Please type another integer: "
@@ -46,13 +49,24 @@ IF
 
 	
 	ELSE
-	PRINT "Please type your favourite colour: "
-	READ colour
+
 	
 	PRINT "Please type the number of repetitions: "
 	READ x
 	WHILE x > 0 DO
-		PRINT colour
+		PRINT "HELLO"
+
+	SET x:= 5
+	WHILE x > 0 DO
+		SET y := 5
+		
+		WHILE y > 0 DO
+			PRINT "y-loop"
+			SET y := y-1
+		ENDWHILE	
+		PRINT "	X-LOOP"
+		
+
 		SET x := x-1
 	ENDWHILE	
 	
