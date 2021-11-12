@@ -1,125 +1,85 @@
 PROGRAM tester4
   
 DECLARE
-	INTEGER x
-	INTEGER y
 	INTEGER z
+	INTEGER u	
+	INTEGER x
+	INTEGER bool
+	INTEGER y
+	INTEGER t
+	STRING colour
 
 
 
 	
 BEGIN
 
-		#SET e := 1
-SET x := 15
-SET y := 0
-		#SET z := x<>y
 
-
-
-
-
-
-
-
-
-PRINT "Please type an integer"
+PRINT "Please type an integer :"
 READ z
+IF z > 5 THEN 
 
-IF
-	1 = z
-
-PRINT "Please type an integer: "
-READ z
-IF
-	z > 5
-
-	THEN 
-	
 	PRINT "Please type another integer: "
+
 	READ u	
-	IF 1 > u  THEN PRINT "NESTED IF WORKED" ENDIF
-	
+
+	IF 1 > u  THEN PRINT "THE NUMBER YOU TYPED IS LESS THAN 1" ENDIF
+
 	PRINT "Please type the number of repetitions: "
+
 	READ x
+
 	WHILE x > 0 DO
 		PRINT x
 		SET x := x - 1
 	ENDWHILE
 
-	
+
+	PRINT "LAST THEN STATEMENT"
+#------------------------------------------------------------------------
 	ELSE
+#------------------------------------------------------------------------
 
-	
+	PRINT "Please type your favourite colour: "
+	READ colour
+
 	PRINT "Please type the number of repetitions: "
-	READ x
-	WHILE x > 0 DO
-		PRINT "HELLO"
-
-	SET x:= 5
-	WHILE x > 0 DO
-		SET y := 5
-		
-		WHILE y > 0 DO
-			PRINT "y-loop"
-			SET y := y-1
-		ENDWHILE	
-		PRINT "	X-LOOP"
-		
-
-		SET x := x-1
+	READ t
+	
+	WHILE t > 0 DO
+		PRINT colour
+		SET t := t-1
 	ENDWHILE	
+
+	PRINT "Do you want to print hey? Type 1 for yes or 0 for no: "
+	READ bool
+	IF bool = 1 THEN PRINT "Hey" ENDIF
 	
+
+	
+		
+		SET x := 5
+		WHILE x > 0 DO
+			SET y := 5
+			WHILE y > 0 DO
+				PRINT "y-loop"
+				SET y := y-1
+			ENDWHILE	
+			PRINT "	X-LOOP"
+		
+
+			SET x := x-1
+		
+		ENDWHILE	
+
 	PRINT "HELLO THERE, ELSE WAS PERFORMED"
-	
-	
+	PRINT "LAST ELSE STATEMENT"
 ENDIF	
 
 
-#IF
-#	1 = 1
-#	THEN 
-#	
-#	PRINT "HELLO THERE, 1 is equal to 1"
-#	
-#	IF 1 = 1 THEN PRINT "NESTED IF WORKED" ENDIF
-#	IF 1 = 1 THEN PRINT "SECOND NESTED IF WOOHOOO" ENDIF	
-#	PRINT "THIS DOESNT WORK I THINK, OH SHIT IT DID!"
-#
-#	
-#	ELSE
-#	
-#	IF 1 = 1 THEN PRINT "ELSE NESTED WORKS TOO" ENDIF
-#	
-#	PRINT "HELLO THERE, ELSE WAS PERFORMED"
-#	
-#	
-#ENDIF
-#	
-#	IF 1 = 1 THEN PRINT "ANOTHER ONE?" ENDIF
-#	IF 1 = 1 THEN PRINT "ANOTHER ONE?" ENDIF
 
+	
 
-
-
-
-
-
-
-
-
-
-
-		#SET z := (y*(x+x)-y)/y
-	#PRINT z
-
-
-
-	#	(y*(x+x)-y)/y
-	# 	(2*(3+3)-2)/2 	2*6 -2 = 10/2 = 5
-	#PRINT z
-
-END
 
 
 

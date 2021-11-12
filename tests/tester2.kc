@@ -11,7 +11,7 @@ BEGIN
 
 	SET x := 10
 	SET y := 18
-	SET z := ( x + y )/3
+	SET z := x+y+x+y+x+y
 	PRINT z
 	#SET str := "Hello World"
 	

@@ -8,11 +8,35 @@ DECLARE
 	
 BEGIN
 
-	SET x := 10
-	SET y := 12
-	SET f := 1
-	SET z := x + y + f
+#	SET x := 10
+#	SET y := 12
+#	SET f := 1
+#	SET z := x + y + f
+#
+#	PRINT z
 
-	PRINT z
+
+	SET x := 0
+	SET y := 0
+
+
+	IF x = 1
+	THEN
+		PRINT "Yes, x is 1"
+		IF y = 1 THEN PRINT "YES y is 1" ELSE PRINT "NO, y is not 1" ENDIF
+		
+	ELSE 
+		PRINT "No, x is not equal to 1"
+		IF y = 1 THEN PRINT "YES y is 1" ELSE PRINT "NO, y is not 1" ENDIF
+		
+	ENDIF			
+
+
+
+
+
+
+
+
 
 END	
