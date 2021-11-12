@@ -13,17 +13,19 @@ import java.util.*;
 
 public class myVisitor extends KnightCodeBaseVisitor {
     
-
+    public int memoryCount = 0;
     public HashMap<String, variable> SymbolTable = new HashMap<String, variable>();
 
     public class variable{
 
         public String variableType;
         public Object value;
+        public int memory;
     
-        public variable(String variableType, Object value){
+        public variable(String variableType, Object value, int memory){
             this.variableType = variableType;
             this.value = value;
+            this.memory = memory;
         
         }
         
@@ -53,14 +55,20 @@ public class myVisitor extends KnightCodeBaseVisitor {
 		
 		String identifier = ctx.getChild(1).getText();
 		var.variableType = ctx.getChild(0).getText();
-        System.out.print(identifier + "   " + var.variableType  );
+        var.memory = memoryCount;
+        System.out.print("    " +identifier + " " + var.variableType +" "+ var.memory+"   " );
         SymbolTable.put(identifier, var);
 
+        memoryCount++;
 
         return super.visitChildren(ctx); 
     
     
     }
+
+    
+    
+    
 
     @Override 
     public Object visitSetvar(KnightCodeParser.SetvarContext ctx) { 
@@ -76,24 +84,54 @@ public class myVisitor extends KnightCodeBaseVisitor {
         SymbolTable.replace(setvar, replacement);
         
 
-        return visitChildren(ctx); 
+        return super.visitChildren(ctx); 
     
+    }
+
+    @Override 
+    public Object visitAddition(KnightCodeParser.AdditionContext ctx) { 
+        
+
+        // doesn't work w/ asm yet
+        String output = "";
+        int op1 =0;
+        int op2 =0;
+        op1 = (int)SymbolTable.get(ctx.getChild(1).getText()).value;
+        op2 = (int)SymbolTable.get(ctx.getChild(2).getText()).value;
+        
+        System.out.print(op1+op2);
+
+        return super.visitChildren(ctx); 
+
     }
 
     @Override 
     public Object visitPrint(KnightCodeParser.PrintContext ctx) { 
         
-        variable var = new variable();
-        var = SymbolTable.get(ctx.getChild(1).getText());
+        if(ctx.getChild(1).getText().charAt(0)=='"'){
 
-        String output = (String)var.value;
+            System.out.print(ctx.getChild(1).getText());
 
-        System.out.print(output);
+        }
+        else{
+
+            variable var = new variable();
+            var = SymbolTable.get(ctx.getChild(1).getText());
+
+          String output = (String)var.value;
+
+          System.out.print(output);
+
+        }
+
+        
 
 
-        return visitChildren(ctx); 
+        return super.visitChildren(ctx); 
     
     }
+
+   
 
     /*@Override 
     public Object VisitRead(KnightCodeParser.ReadContext ctx) { 

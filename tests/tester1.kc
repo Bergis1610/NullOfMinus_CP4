@@ -6,7 +6,13 @@ DECLARE
 	INTEGER z
 	
 BEGIN
+	SET x:= 120
+	SET y:= 340
+	SET z:= x
 
+	PRINT x
+	PRINT y
+	PRINT z
 	PRINT "Hello World"
 
 END	
