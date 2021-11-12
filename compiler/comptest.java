@@ -56,7 +56,7 @@ public class comptest{
             
             
             //Walk the tree using the myListener2 class
-            myListener6 listener = new myListener6(output);
+            myListener7 listener = new myListener7(output);
 	    ParseTreeWalker walker = new ParseTreeWalker();
 	    
 	    walker.walk(listener, tree);

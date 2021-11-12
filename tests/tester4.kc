@@ -53,11 +53,12 @@ IF z > 5 THEN
 
 	PRINT "Do you want to print hey? Type 1 for yes or 0 for no: "
 	READ bool
-	IF bool = 1 THEN PRINT "Hey" ENDIF
+	IF bool = 1 THEN PRINT "Hey" PRINT "HOPE THIS PRINTS" PRINT "IF THIS DOESNT PRINT ITDOESNTWORK!!!!" ENDIF
 	
 
 	
-		
+	PRINT "HERE COMES A NESTED LOOP!!"
+	PRINT ""	
 		SET x := 5
 		WHILE x > 0 DO
 			SET y := 5
