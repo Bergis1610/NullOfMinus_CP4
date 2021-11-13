@@ -10,14 +10,15 @@ BEGIN
 
 #	SET x := 10
 #	SET y := 12
-#	SET f := 1
+#	
 #	SET z := x + y + f
 #
 #	PRINT z
 
-
+	SET z := 2
 	SET x := 0
 	SET y := 0
+	SET f := 1
 
 
 	IF x = 1
@@ -32,9 +33,19 @@ BEGIN
 		IF y = 1 THEN PRINT "YES y is 1" ELSE PRINT "NO, y is not 1" PRINT "y is equal to 0" ENDIF
 		PRINT "SUP"
 		PRINT "SUP"
+		IF y=1 THEN PRINT "YES y is still 1" ELSE PRINT "No, Y is still not 1" PRINT "y is equal to something else" ENDIF
 		
+		IF z>f 
+		THEN 
+			PRINT "z is greater than f"
+			IF z = 2 THEN PRINT "yep, z is 2" ELSE PRINT "nope, z is not 2" ENDIF
+		ELSE 	
+			PRINT "z is less than f"
+			IF f = 1 THEN PRINT "yep, f is 1" ELSE PRINT "nope, f is not 1" ENDIF
+		ENDIF		
 		
-	ENDIF			
+	ENDIF		
+		
 
 
 
