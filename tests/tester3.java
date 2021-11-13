@@ -1,8 +1,40 @@
 package tests;
 
+import java.util.*;
+
 public class tester3{
 
+
 	public static void main(String[]args){
+	
+	
+		//int x;
+		
+		
+		
+		//System.out.println("Enter a number");
+		Scanner scan = new Scanner(System.in);
+		
+		
+		String v;
+		v = scan.nextLine();
+		scan.nextLine();
+		//x = scan.nextInt();
+		
+		/*
+		while(x > 0){
+			System.out.println(x);
+			x = x - 1;
+		}
+		*/
+		
+		
+	
+	
+	
+	
+	
+	
 	
 	
 	/*
@@ -12,12 +44,23 @@ public class tester3{
 		int e = 13;
 		int z = x+y+f+e;
 	*/
-	
-		int x = 1;
-		int y = 0;
-		int z;
+	/*
+		String x;
+		//int y;
+		//int y = 0;
+		//int z;
 		
+		System.out.println("ENTER A STRING: ");
+		
+		Scanner scan = new Scanner(System.in);
+		x = scan.nextLine();//scan.nextLine();
 	
+		System.out.println(x);
+	*/	
+	
+		//y = scan.nextInt();//scan.nextLine();	
+		//System.out.println(y);
+	/*
 		if(x>y){
 		
 			System.out.println("CORRECT");	
@@ -27,6 +70,7 @@ public class tester3{
 			System.out.println("WRONG");
 		
 		}
+*/
 	
 	
 		
@@ -98,6 +142,33 @@ public class tester3{
 		mv.visitVarInsn(ILOAD,5);
 		mv.visitMethodInsn(INVOKEVIRTUAL, "java/io/PrintStream", "println", "(I)V", false);
 
+*/
+
+/*
+
+
+IF 10 >1 
+THEN 
+PRINT "CORRECT 1" 			
+ENDIF
+
+IF 10 > 1 
+THEN 
+PRINT "CORRECT 2" 		
+ENDIF
+
+IF 10 > 1 
+THEN 
+PRINT "CORRECT 3"   			
+ENDIF
+IF 10 > 1 
+THEN 
+PRINT "CORRECT 4" 			
+ENDIF
+IF 10 > 1 
+THEN 
+PRINT "CORRECT 5" 			
+ENDIF
 */
 
 

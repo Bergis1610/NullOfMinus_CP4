@@ -15,7 +15,7 @@ import lexparse.*;
 
 import java.util.*;
 
-public class comptest{
+public class comptest2{
 
 
     public static void main(String[] args){
@@ -56,7 +56,7 @@ public class comptest{
             
             
             //Walk the tree using the myListener2 class
-            myListener7 listener = new myListener7(output);
+            myListener6 listener = new myListener6(output);
 	    ParseTreeWalker walker = new ParseTreeWalker();
 	    
 	    walker.walk(listener, tree);
