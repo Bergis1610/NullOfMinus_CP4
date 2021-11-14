@@ -16,11 +16,17 @@ public class myVisitor extends KnightCodeBaseVisitor {
     public int memoryCount = 0;
     public HashMap<String, variable> SymbolTable = new HashMap<String, variable>();
 
+    public String fileName = "";
+
+    private ClassWriter cw;  //class level ClassWriter 
+	private MethodVisitor mainVisitor; //class level MethodVisitor
+
     public class variable{
 
         public String variableType;
         public Object value;
         public int memory;
+        
     
         public variable(String variableType, Object value, int memory){
             this.variableType = variableType;
@@ -36,6 +42,52 @@ public class myVisitor extends KnightCodeBaseVisitor {
     
     
     }
+
+    public myVisitor(String filestuff){
+
+        this.fileName = filestuff;
+        setupASM();
+
+    }// end constructor
+
+    public void setupASM(){
+
+        cw = new ClassWriter(ClassWriter.COMPUTE_FRAMES);
+        	cw.visit(Opcodes.V11, Opcodes.ACC_PUBLIC,"output/"+this.fileName, null, "java/lang/Object",null);
+	
+		//Use local MethodVisitor to create the constructor for the object
+		MethodVisitor mv=cw.visitMethod(Opcodes.ACC_PUBLIC, "<init>", "()V", null, null);
+       	mv.visitCode();
+        	mv.visitVarInsn(Opcodes.ALOAD, 0); //load the first local variable: this
+        	mv.visitMethodInsn(Opcodes.INVOKESPECIAL, "java/lang/Object", "<init>", "()V",false);
+        	mv.visitInsn(Opcodes.RETURN);
+        	mv.visitMaxs(1,1);
+        	mv.visitEnd();
+       	
+		//Use global MethodVisitor to write bytecode according to entries in the parsetree	
+	 	mainVisitor = cw.visitMethod(Opcodes.ACC_PUBLIC + Opcodes.ACC_STATIC,  "main", "([Ljava/lang/String;)V", null, null);
+        	mainVisitor.visitCode();
+
+    }// end setupASM
+
+    public void endASM(){
+
+        //Use global MethodVisitor to finish writing the bytecode and write the binary file.
+		mainVisitor.visitInsn(Opcodes.RETURN);
+		mainVisitor.visitMaxs(3, 3);
+		mainVisitor.visitEnd();
+
+		cw.visitEnd();
+
+        	byte[] b = cw.toByteArray();
+
+
+
+        	Utilities.writeFile(b,"output/"+this.fileName+".class");
+        
+        	System.out.println("Done!");
+
+    }// end endASM
 
     
     @Override 
@@ -58,6 +110,8 @@ public class myVisitor extends KnightCodeBaseVisitor {
         var.memory = memoryCount;
         System.out.print("    " +identifier + " " + var.variableType +" "+ var.memory+"   " );
         SymbolTable.put(identifier, var);
+
+       
 
         memoryCount++;
 
@@ -82,12 +136,29 @@ public class myVisitor extends KnightCodeBaseVisitor {
         replacement.value = assignvar;
 
         SymbolTable.replace(setvar, replacement);
+
+        variable var = SymbolTable.get(ctx.getChild(1).getText());
+
+
+        if(var.variableType == "STRING"){
+
+            mainVisitor.visitLdcInsn(var.value);
+			mainVisitor.visitVarInsn(Opcodes.ASTORE,var.memory);
+
+        }
+        else if(var.variableType == "INTEGER"){
+
+            int x = (int)var.value;
+            mainVisitor.visitIntInsn(Opcodes.SIPUSH, x);
+            mainVisitor.visitVarInsn(Opcodes.ISTORE, var.memory);
+
+        }
         
 
         return super.visitChildren(ctx); 
     
     }
-
+/*
     @Override 
     public Object visitAddition(KnightCodeParser.AdditionContext ctx) { 
         
@@ -103,20 +174,38 @@ public class myVisitor extends KnightCodeBaseVisitor {
 
         return super.visitChildren(ctx); 
 
-    }
+    }*/
 
     @Override 
     public Object visitPrint(KnightCodeParser.PrintContext ctx) { 
         
+        mainVisitor.visitFieldInsn(Opcodes.GETSTATIC,"java/lang/System", "out", "Ljava/io/PrintStream;");
+
         if(ctx.getChild(1).getText().charAt(0)=='"'){
 
             System.out.print(ctx.getChild(1).getText());
+
+            mainVisitor.visitLdcInsn(ctx.getChild(1).getText());
+			mainVisitor.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/io/PrintStream",  "println", "(Ljava/lang/String;)V", false);
 
         }
         else{
 
             variable var = new variable();
             var = SymbolTable.get(ctx.getChild(1).getText());
+
+            if(var.variableType == "STRING"){
+
+                mainVisitor.visitVarInsn(Opcodes.ALOAD, var.memory);
+				mainVisitor.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/io/PrintStream",  "println", "(Ljava/lang/String;)V", false);
+
+            }
+            else if(var.variableType == "INTEGER"){
+
+                mainVisitor.visitVarInsn(Opcodes.ILOAD, var.memory);
+				mainVisitor.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/io/PrintStream", "println", "(I)V", false);
+
+            }
 
           String output = (String)var.value;
 

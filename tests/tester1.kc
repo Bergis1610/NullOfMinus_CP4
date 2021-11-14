@@ -3,12 +3,12 @@ PROGRAM tester1
 DECLARE
 	INTEGER x
 	INTEGER y
-	INTEGER z
+	# INTEGER z
 	
 BEGIN
 	SET x:= 120
 	SET y:= 340
-	SET z:= x
+	# SET z:= x
 
 	PRINT x
 	PRINT y

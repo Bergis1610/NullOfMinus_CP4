@@ -46,8 +46,8 @@ public class comptest{
             
          
 	    ParseTreeWalker walker = new ParseTreeWalker();
-	    myVisitor visitor = new myVisitor();
-	   visitor.visit(tree);
+	    //myVisitor visitor = new myVisitor();
+	   //visitor.visit(tree);
             
         
         }

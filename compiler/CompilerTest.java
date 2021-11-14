@@ -65,7 +65,14 @@ public class CompilerTest{
         
 	    Scanner scan = new Scanner(System.in);
 	    System.out.print("Enter name for output class file: ");
-	    String classFile = scan.next();
+        String classFile = "output";
+
+        String dummyName = scan.next();
+
+        if(dummyName != ""){
+            classFile = dummyName;
+        }
+	    
 	    
 	    System.out.print("Debug?  Y/N: ");
 	    String debug = scan.next();
@@ -79,8 +86,9 @@ public class CompilerTest{
 	    walker.walk(listener, tree);
 	    */
 	    
-	  myVisitor visitor = new myVisitor();
-	   visitor.visit(tree);  
+	  myVisitor visitor = new myVisitor(classFile);
+	   visitor.visit(tree); 
+       visitor.endASM(); 
 	  
 	  
             
