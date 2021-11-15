@@ -1,0 +1,58 @@
+PROGRAM tester5
+
+DECLARE
+	INTEGER x
+	INTEGER y
+	STRING answer
+	STRING something
+	
+BEGIN
+
+
+	PRINT "Please type your percentage for your last test"
+	READ x
+
+
+	IF x > 90
+	THEN
+		PRINT "Congratulations on acing, you got an A!!"
+				
+	ELSE 
+		IF x>80 
+		THEN 
+			PRINT "Great, you got a B!"
+		
+		ELSE 	
+		
+			IF x>70 
+			THEN 
+				PRINT "Alright, not bad, you got a C."
+		
+			ELSE 	
+				IF x > 60
+				THEN
+					PRINT "Oh, at least you didnt fail, you got a D"
+				ELSE
+					PRINT "Well, looks like you failed, you got an F"
+				
+				ENDIF
+				
+			
+			ENDIF	
+				
+			
+		ENDIF	
+			
+		
+	ENDIF		
+		
+
+
+
+
+
+
+
+
+
+END	
