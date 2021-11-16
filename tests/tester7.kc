@@ -1,0 +1,42 @@
+PROGRAM tester7
+
+
+DECLARE
+	
+	INTEGER bool
+	INTEGER x
+	INTEGER y
+	
+BEGIN
+
+
+	PRINT "Do you want to print a nested loop? Type 1 for yes or 0 for no: "
+	READ bool
+
+	IF bool = 1 THEN 
+		SET x := 5
+		WHILE x > 0 DO
+			SET y := 5
+			WHILE y > 0 DO
+				PRINT "y-loop"
+				SET y := y-1
+			ENDWHILE	
+			PRINT "	X-LOOP"
+		
+
+			SET x := x-1
+		
+		ENDWHILE
+	ELSE 
+	
+		PRINT "YOU DIDNT WANT THE NESTED LOOP"		
+	ENDIF
+
+
+
+
+
+
+
+
+END
