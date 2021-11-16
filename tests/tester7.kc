@@ -1,0 +1,58 @@
+PROGRAM tester6
+  
+DECLARE
+	INTEGER z
+	INTEGER u	
+	INTEGER x
+	INTEGER bool
+	INTEGER y
+	INTEGER t
+	STRING colour
+
+
+
+	
+BEGIN
+
+
+PRINT "Please type an integer :"
+READ z
+IF z > 5 THEN 
+
+#1
+	PRINT "Please type another integer: "
+#2
+	READ u	
+#3 + 1
+	IF 1 > u  THEN PRINT "THE NUMBER YOU TYPED IS LESS THAN 1" ENDIF
+#4
+	PRINT "Please type the number of repetitions: "
+#5
+	READ x
+	PRINT x
+#6
+	PRINT "LAST THEN STATEMENT"
+#------------------------------------------------------------------------
+	ELSE
+#------------------------------------------------------------------------
+
+	PRINT "Please type your favourite colour: "
+	READ colour
+
+	
+	PRINT colour
+	
+
+
+	PRINT "Do you want to print hey? Type 1 for yes or 0 for no: "
+	READ bool
+	IF bool = 1 THEN PRINT "Hey" PRINT "HOPE THIS PRINTS" PRINT "IF THIS DOESNT PRINT ITDOESNTWORK!!!!" ENDIF
+	
+
+	
+	PRINT "HERE COMES NOT A NESTED LOOP!!"
+		
+
+	PRINT "HELLO THERE, ELSE WAS PERFORMED"
+	PRINT "LAST ELSE STATEMENT"
+ENDIF	
