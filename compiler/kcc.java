@@ -1,7 +1,4 @@
 package compiler;
-/**
- * This class encapsulates a basic grammar test.
- */
 
 import java.io.IOException;
 //ANTLR packages
@@ -10,10 +7,26 @@ import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.tree.*;
 import org.antlr.v4.gui.Trees;
-
 import lexparse.*;
-
 import java.util.*;
+
+
+
+/**
+ * kcc.java
+ * This is the front end compiler class that calls upon a listener file that does everything regarding the compiling
+ * @author Emil Bjørlykke Berglund
+ * @author Adam Fischer
+ * @author Denys Ladden
+ * @version 2.0
+ * Programming project 4
+ * CS322 - Compiler Construction
+ * Fall 2021
+ **/
+
+
+
+
 
 public class kcc{
 
@@ -56,7 +69,7 @@ public class kcc{
             
             
             //Walk the tree using the myListener2 class
-            myListener9 listener = new myListener9(output);
+            myListenerKccVersion listener = new myListenerKccVersion(output);
 	    ParseTreeWalker walker = new ParseTreeWalker();
 	    
 	    walker.walk(listener, tree);
