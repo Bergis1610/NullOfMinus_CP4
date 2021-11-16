@@ -11,7 +11,7 @@ import static org.objectweb.asm.Opcodes.*;
 import lexparse.*; //classes for lexer parser
 import java.util.*;
 
-public class myListener9 extends KnightCodeBaseListener{
+public class myListener10 extends KnightCodeBaseListener{
 
 	private ClassWriter cw;  //class level ClassWriter 
 	private MethodVisitor mainVisitor; //class level MethodVisitor
@@ -197,14 +197,14 @@ public class stacker{
 	
 	
 
-	public myListener9(String programName, boolean debug){
+	public myListener10(String programName, boolean debug){
 	       
 		this.programName = programName;
 		this.debug = debug;
 
 	}//end constructor
 	
-	public myListener9(String programName){
+	public myListener10(String programName){
 	       
 		this.programName = programName;
 		debug = false;
@@ -1377,8 +1377,42 @@ public class stacker{
 								if(tempoStringer.length()>=5){	
 								if(ctx.getChild(tempI).getChild(0).getChild(i).getChild(0).getChild(0).getText().substring(0,5).equalsIgnoreCase("WHILE")){
 									System.out.println("Found a double nested loop");
+									
+									int cll = ctx.getChild(tempI).getChild(0).getChild(i).getChild(0).getChildCount();
+									int j = 5;
+									while(j<cll-1){
+										String tempnextstringer = ctx.getChild(tempI).getChild(0).getChild(i).getChild(0).getChild(0).getText();
+										if(tempnextstringer.length()>=5){				
+							if(ctx.getChild(tempI).getChild(0).getChild(i).getChild(0).getChild(j).getChild(0).getText().substring(0,5).equalsIgnoreCase("WHILE")){
+									
+									
+												System.out.println("\n\n------------------------------------------");
+												System.out.println("COMPILER ERROR");
+												System.out.println("------------------------------------------");
+			
+												System.out.println("While-loop overflow");
+												System.out.println("Compiler cannot handle more 3 nested while-loops inside an if-bracket");
+												System.out.println("A label error would occur.");
+				
+												exit = true;
+												return;
+									
+										}	
+										
+										
+										
+										}
+										j++;
+									
+									}
+								
 		//		     System.out.println("child count = " + ctx.getChild(tempI).getChild(0).getChild(i).getChild(0).getChildCount());
-									f+= ctx.getChild(tempI).getChild(0).getChild(i).getChild(0).getChildCount()-6;	
+									f+= cll-6;	
+									
+									
+									
+									
+									
 									
 								}
 								}

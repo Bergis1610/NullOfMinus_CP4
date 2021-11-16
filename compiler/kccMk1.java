@@ -56,7 +56,7 @@ public class kccMk1{
             
             
             //Walk the tree using the myListener2 class
-            myListener9 listener = new myListener9(output);
+            myListener10 listener = new myListener10(output);
 	    ParseTreeWalker walker = new ParseTreeWalker();
 	    
 	    walker.walk(listener, tree);

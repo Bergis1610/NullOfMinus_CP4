@@ -6,6 +6,7 @@ DECLARE
 	INTEGER bool
 	INTEGER x
 	INTEGER y
+	INTEGER z
 	
 BEGIN
 
@@ -19,7 +20,12 @@ BEGIN
 			SET y := 5
 			WHILE y > 0 DO
 				PRINT "y-loop"
+				
+					
+				
 				SET y := y-1
+				
+				
 			ENDWHILE	
 			PRINT "	X-LOOP"
 		
