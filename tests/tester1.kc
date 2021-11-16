@@ -3,16 +3,24 @@ PROGRAM tester1
 DECLARE
 	INTEGER x
 	INTEGER y
+	INTEGER w
+	STRING h
 	# INTEGER z
 	
 BEGIN
+
+	READ w 
+	READ h
 	SET x:= 120
 	SET y:= 340
+	
 	# SET z:= x
 
 	PRINT x
 	PRINT y
-	PRINT z
+	PRINT w
+	PRINT h
+	# PRINT z
 	PRINT "Hello World"
 
 END	

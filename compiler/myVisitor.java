@@ -121,7 +121,41 @@ public class myVisitor extends KnightCodeBaseVisitor {
     }
 
     
+    @Override 
+    public Object visitRead(KnightCodeParser.ReadContext ctx) { 
+
+        variable var = SymbolTable.get(ctx.getChild(1).getText());
+       
+
+        mainVisitor.visitTypeInsn(Opcodes.NEW, "java/util/Scanner");
+        mainVisitor.visitInsn(Opcodes.DUP);
+        mainVisitor.visitFieldInsn(Opcodes.GETSTATIC,"java/lang/System", "in", "Ljava/io/InputStream;");
+        mainVisitor.visitMethodInsn(Opcodes.INVOKESPECIAL, "java/util/Scanner", "<init>", "(Ljava/io/InputStream;)V" , false);
+        mainVisitor.visitVarInsn(Opcodes.ASTORE,memoryCount);
+
+        if(var.variableType.charAt(0) == 'S'){
+
+           
+            mainVisitor.visitVarInsn(Opcodes.ALOAD, memoryCount);
+            mainVisitor.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/util/Scanner", "nextLine", "()Ljava/lang/String;", false);
+            mainVisitor.visitVarInsn(Opcodes.ASTORE, var.memory);
+
+
+        }
+        else{
+
+           
+            mainVisitor.visitVarInsn(Opcodes.ALOAD, memoryCount);
+            mainVisitor.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/util/Scanner", "nextInt", "()I", false);
+            mainVisitor.visitVarInsn(Opcodes.ISTORE, var.memory);
+
+        }
+
+        memoryCount++;
+        return super.visitChildren(ctx);
     
+    
+    }
     
 
     @Override 
@@ -222,12 +256,6 @@ public class myVisitor extends KnightCodeBaseVisitor {
 
    
 
-    /*@Override 
-    public Object VisitRead(KnightCodeParser.ReadContext ctx) { 
-
-        return super.visitChildren(ctx);
     
-    
-    }*/
 
 }// end class myVisitor
