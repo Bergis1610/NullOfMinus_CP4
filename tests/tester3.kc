@@ -28,7 +28,6 @@ BEGIN
 			
 			#Nested count = 3
 			IF 1 = 1 THEN 
-				PRINT "HEY AGAIN DIPSHIT" 
 				PRINT "NOPE2" 
 				PRINT "NOPESTER" 
 			ENDIF

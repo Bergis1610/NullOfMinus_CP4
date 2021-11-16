@@ -169,7 +169,7 @@ public class stacker{
 	
 	public int pop(stacker s){
 	
-		int value = -1;
+		int value = 0;
 		if(s.head == 0){
 			return value;
 		} else {	
@@ -1493,7 +1493,7 @@ public class stacker{
 					*/
 					if(ctx.getChild(tempI).getText().substring(0,5).equalsIgnoreCase("WHILE")){
 				
-							ifCount1 += (ctx.getChild(tempI).getChild(0).getChildCount() - 6);
+							temporaryIfCounter += (ctx.getChild(tempI).getChild(0).getChildCount() - 6);
 					
 						//System.out.println("--------------------------------------------------------");
 						//System.out.println("ifCount before addition: " + ifCount1);
@@ -1568,7 +1568,9 @@ public class stacker{
 		*/
 		System.out.print("\nPrior to stack manipulation: ");printStack(decIfStacker);
 		int brukOgKast = pop(decIfStacker);
-		System.out.print("\nmid stack manipulation: ");printStack(decIfStacker);
+		
+		System.out.println("\nbrukOgKast "+brukOgKast);
+		System.out.print("mid stack manipulation: ");printStack(decIfStacker);
 		brukOgKast += temporaryElseCounter;
 		push(decIfStacker, brukOgKast);
 		System.out.print("\npost stack manipulation: ");printStack(decIfStacker);
@@ -1893,6 +1895,7 @@ public class stacker{
 		
 		
 		
+		
 		int tempBoolElse = peek(decElseStacker);
 		//int tempBoolElse = Character.getNumericValue(decElseStack.charAt(0));
 		
@@ -2044,8 +2047,10 @@ public class stacker{
 			
 		}
 		
+		System.out.print("should be updated if stacker: ");printStack(decIfStacker);
+		System.out.print("\nshould be updated else stacker: ");printStack(decIfStacker);
 		//System.out.println("newStack = " + decElseStack);
-		
+		System.out.println("");
 			
 		
 		System.out.println("Exit Decision");
