@@ -1,4 +1,4 @@
-# KnightCodeSkeleton
+# NullOfMinus_CP4
 
 This project encapsulates the directory structure required for the final project in CS322.
 The goal of this project was to use ANTLR to create a lexer and parser for a grammar file containing the language 'KnightCode.' From there, we received a parse tree, for which we created a Listener in order to use ASM to translate the parse tree into java bytecode. As a result, the project allows for KnightCode to compile to the JVM.
@@ -8,8 +8,9 @@ In order to operate the compiler, you must first refer to the build.xml file whi
 In summary, an example of a command to run program1 from the tests directory would be as follows: "java compiler.kcc tests/program1.kc output/Program1" (Alternatively, if you are in the compiler directory to begin with, you can drop the ' compiler.' from the command)
 From there, the command "java output/Program1" would run the java bytecode created by kcc.java. 
 
-# NullOfMinus_CP4
 
-Emil Bergis
-Denys Ladden
-Adam Fischer
+ 
+   
+Emil Bergis   
+Denys Ladden   
+Adam Fischer   
