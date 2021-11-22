@@ -33,7 +33,12 @@ public class myListenerKccVersion extends KnightCodeBaseListener{
 	
 //Here are general stuff that I made
 
-
+/*
+ *
+ * The variable object is the second component to the SymbolTable hash map. It contains strings to determine the datatype and value of variables in KnightCode as well as an integer 
+ * to determine the variable's location in memory and a boolean to keep track of whether or not athe valurable has been set by the user.
+ *
+*/
 public class variable{
 
 	public String variableType = "";
@@ -41,20 +46,26 @@ public class variable{
 	public int memLoc = -1;
 	public boolean valueSet = false;
 
-
+	/*
+	 *This is the constructor for the variable object
+	*/
 	public variable(String variableType, String value){
 		this.variableType = variableType;
 		this.value = value;
 	
-	}
+	}// end variable constructor
 	
+
+	/*
+	 * This is the empty argument constructor
+	*/
 	public variable(){
 		variableType = "";
 		value = "";
-	}
+	}// end empty argument constructor
 
 
-}
+}// end class variable
 
 public class stacker{
 
@@ -71,7 +82,7 @@ public class stacker{
 }
 
 
-	public HashMap<String, variable> SymbolTable = new HashMap<String, variable>();
+	public HashMap<String, variable> SymbolTable = new HashMap<String, variable>();// the SymbolTable hash map is vital to the compiler as it keeps track of all variables
 	public static final String INT = "INTEGER";
 	public static final String STR = "STRING";
 	
@@ -150,14 +161,15 @@ public class stacker{
 			
 		} 	
 		
-	}
+	}// end printHashMap
 	
+	// this method determines whether or not a variable is a string, making this process faster with no duplicate code when this is required
 	public boolean isString(variable var){
 		
 		if(var.variableType.equals(STR))
 			return true;
 		return false;
-	}
+	}// end isString
 	
 	public void printStack(stacker s){
 	
@@ -165,7 +177,7 @@ public class stacker{
 			System.out.print(s.stack[i]+",");
 		}	
 	
-	}
+	}// end pringStack
 	
 	public int push(stacker s, int value){
 	
@@ -236,6 +248,10 @@ public class stacker{
             	public Label printSkipElse = new Label();
             	public Label secondPart = new Label();
 
+
+	/*
+	 * The setupClass method creates the class writer for all of the ASM in the listener so that the program can write to java bytecode
+	*/
 	public void setupClass(){
 	
 		if(exit)
@@ -268,7 +284,9 @@ public class stacker{
 	}//end setupClass
 	
 		
-
+	/*
+	 * This method is the counterpart to setupClass. It closes the class writer and outputs the resulting bytecode to the specified class file
+	*/
 	public void closeClass(){
 	
 		if(exit)
@@ -336,7 +354,7 @@ public class stacker{
 		//enter = false;
 		count = ctx.getChildCount();
 		
-	}
+	}// end enterDeclare
 	@Override 
 	public void exitDeclare(KnightCodeParser.DeclareContext ctx){
 		if(exit)
@@ -346,8 +364,11 @@ public class stacker{
 		
 		//enter = true;
 		System.out.println("Exit declare");
-	}
+	}// end exitDeclare
 
+	/*
+	 * This method is what adds entries to the SymbolTable by entering the datatype into a variable object and adding that value to the hash map with the variable's id as the key
+	*/
 	@Override 
 	public void enterVariable(KnightCodeParser.VariableContext ctx){
 		if(exit)
@@ -369,28 +390,29 @@ public class stacker{
 		memoryCounter++;
 		
 	
-	}
+	}// end enterVariable
+
 	@Override 
 	public void exitVariable(KnightCodeParser.VariableContext ctx){ 
 		if(exit)
 			return;
 	
 		System.out.println("Exit variable");
-	}
+	}// end exitVariable
 	
 	@Override 
 	public void enterIdentifier(KnightCodeParser.IdentifierContext ctx){
 		if(exit)
 			return;
 	
-	}
+	}// end enterIdentifier
 	
 	@Override 
 	public void exitIdentifier(KnightCodeParser.IdentifierContext ctx){ 
 		if(exit)
 			return;
 	
-	}
+	}// end exitIdentifier
 	
 	@Override public void enterVartype(KnightCodeParser.VartypeContext ctx) { }
 	@Override public void exitVartype(KnightCodeParser.VartypeContext ctx) { }
@@ -406,7 +428,8 @@ public class stacker{
 		
 		count = ctx.getChildCount();
 
-	}
+	}// end enterBody
+
 	@Override 
 	public void exitBody(KnightCodeParser.BodyContext ctx){ 
 		if(exit)
@@ -417,7 +440,7 @@ public class stacker{
 		mainVisitor.visitLabel(printSkipIf);
 		
 		System.out.println("Exit body!");
-	}
+	}// end exitBody
 	
 	
 	
@@ -426,6 +449,11 @@ public class stacker{
 	
 	
 	public int operationCount = 0;
+
+
+	/*
+	 * While enterVariable creates entries in the SymbolTable, Setvar actually defines the values of these entries. Additionally, this checks for errors when the datatype is incorrect or when the variable was not declared earlier
+	*/
 	@Override 
 	public void enterSetvar(KnightCodeParser.SetvarContext ctx){ 
 		if(exit)
@@ -471,8 +499,12 @@ public class stacker{
 			System.out.println(genIntStr);
 		}
 	
-	}
+	}// end enterSetvar
 	
+
+	/*
+	 * This method sends the actual value of the variable to a specific location in memory with ASM and keeps track of this location within the SymbolTable
+	*/
 	@Override 
 	public void exitSetvar(KnightCodeParser.SetvarContext ctx){ 
 		if(exit)
@@ -652,7 +684,7 @@ public class stacker{
 				}
 			
 			
-		}
+		}// end exitSetvar
     	    	
     	    	System.out.print("\nshould be updated if stacker: ");printStack(decIfStacker);
 		System.out.print("\nshould be updated else stacker: ");printStack(decElseStacker);
@@ -738,7 +770,8 @@ public class stacker{
 		
 		genIntStr += op1;
 		
-	}
+	}// end enterId
+
 	@Override 
 	public void exitId(KnightCodeParser.IdContext ctx){ 
 		if(exit)
@@ -749,13 +782,14 @@ public class stacker{
 		genIntStr += arithmeticOperation.charAt(0);
 		if(arithmeticOperation.length() != 0)
 			arithmeticOperation = arithmeticOperation.substring(1);
+
 		if(printTwice){
 			genIntStr += arithmeticOperation.charAt(0);
 			if(arithmeticOperation.length() != 0)
 				arithmeticOperation = arithmeticOperation.substring(1);
 			printTwice = false;	
 		}	
-	}
+	}// end exitId
 	
 	
 	
@@ -776,7 +810,8 @@ public class stacker{
 		arithmeticOperation = ")" + arithmeticOperation;
 		
 	
-	}
+	}// end enterParenthesis
+
 	@Override 
 	public void exitParenthesis(KnightCodeParser.ParenthesisContext ctx){ 
 		if(exit)
@@ -788,7 +823,7 @@ public class stacker{
 			arithmeticOperation = arithmeticOperation.substring(1);
 		
 		System.out.println("Exit parenthesis");
-	}
+	}// end exitParenthesis
 	
 	
 	/**
@@ -803,7 +838,7 @@ public class stacker{
 		operationCount++;
 		
 		arithmeticOperation = "+" + arithmeticOperation;
-	}
+	}// end enterAddition
 	
 	@Override 
 	public void exitAddition(KnightCodeParser.AdditionContext ctx){ 
@@ -817,7 +852,7 @@ public class stacker{
 		mainVisitor.visitInsn(IADD);
                       	
 		System.out.println("Exit addition");
-	}
+	}// end exitAddition
 	
 	/**
 	 * Multiplication
@@ -832,7 +867,8 @@ public class stacker{
 		operationCount++;
 		arithmeticOperation = "*" + arithmeticOperation;
 	
-	}
+	}// end enterMultiplication
+
 	@Override 
 	public void exitMultiplication(KnightCodeParser.MultiplicationContext ctx){ 
 		if(exit)
@@ -845,7 +881,7 @@ public class stacker{
             		
 		System.out.println("Exit multiplication");
 	
-	}
+	}// end exitMultiplication
 	
 	/**
 	 * Division
@@ -860,7 +896,8 @@ public class stacker{
 		operationCount++;
 		arithmeticOperation = "/"+arithmeticOperation;
 	
-	}
+	}// end enterDivision
+
 	@Override 
 	public void exitDivision(KnightCodeParser.DivisionContext ctx){ 
 		if(exit)
@@ -873,7 +910,7 @@ public class stacker{
             		
 		System.out.println("Exit division");
 	
-	}
+	}// end exitDivision
 	
 	
 	/**
@@ -889,7 +926,8 @@ public class stacker{
 		operationCount++;
 		arithmeticOperation = "-"+ arithmeticOperation;
 	
-	}
+	}// end enterSubtraction
+
 	@Override 
 	public void exitSubtraction(KnightCodeParser.SubtractionContext ctx){ 
 		if(exit)
@@ -901,7 +939,8 @@ public class stacker{
 		mainVisitor.visitInsn(ISUB);
             	           	
 		System.out.println("Exit subtraction");
-	}
+
+	}// end exitSubtraction
 	
 	
 	
@@ -924,7 +963,8 @@ public class stacker{
 			//System.out.println(compString);
 		}	
 	
-	}
+	}// end enterComparison
+
 	@Override 
 	public void exitComparison(KnightCodeParser.ComparisonContext ctx){ 
 		if(exit)
@@ -975,7 +1015,8 @@ public class stacker{
 		
 			    	
 		System.out.println("Exit Comparison");
-	}
+
+	}// end exitComparison
 	 
 	/**
 	 * Comp: GT | LT | EQ | NEQQ"
@@ -988,7 +1029,8 @@ public class stacker{
 			
 		System.out.println("Enter Comp");	
 			
-	}
+	}// end enterComp
+
 	@Override 
 	public void exitComp(KnightCodeParser.CompContext ctx){ 
 		if(exit)
@@ -997,7 +1039,7 @@ public class stacker{
 		//mainVisitor.visitJumpInsn(compString, Label label);
 		
 		System.out.println("Exit Comp");
-	}
+	}// end exitComp
 	
 	
 
@@ -1674,7 +1716,7 @@ public class stacker{
 		System.out.println("");
 	
 
-	}
+	}// end enterDecision
 	
 	
 	
@@ -1965,8 +2007,9 @@ public class stacker{
 			
 		
 		System.out.println("Exit Decision");
-		System.out.println("------------------------------------------------------------------------------------------------------------\n\n");	
-	}
+		System.out.println("------------------------------------------------------------------------------------------------------------\n\n");
+
+	}// end exitDecision
 	
 	
 	/**
@@ -2195,7 +2238,7 @@ public class stacker{
 		
 	
 		System.out.println("Exit print");
-	}
+	}// end exitPrint
 	
 	
 	
@@ -2269,7 +2312,7 @@ public class stacker{
 		
 
 	
-	}
+	}// end enterRead
 	
 	
 	@Override 
@@ -2480,7 +2523,7 @@ public class stacker{
 		System.out.println("Exit read\n");
 		
 
-	}
+	}//end exitRead
 
 	
 	public int loopLabCount = 0;
@@ -2811,7 +2854,7 @@ public class stacker{
 		
 			syntaxTest = ctx.getChildCount() - 6;		
 		
-	}
+	}// end enterLoop
 	
 	
 	@Override 
@@ -3075,7 +3118,8 @@ public class stacker{
 		System.out.println("");
 			
 		System.out.println("Exit loop");
-	}
+
+	}// end exitLoop
 	
 	
 	/**
@@ -3090,6 +3134,7 @@ public class stacker{
 	 	if(debug) 
 	 		printContext(ctx.getText()); 
 	 }
+
 
 }//end class
 
