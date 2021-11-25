@@ -23,7 +23,7 @@ import java.util.*;
 
 
 
-public class myListenerKccVersion extends KnightCodeBaseListener{
+public class myListenerKccVersion2 extends KnightCodeBaseListener{
 
 	private ClassWriter cw;  //class level ClassWriter 
 	private MethodVisitor mainVisitor; //class level MethodVisitor
@@ -232,7 +232,7 @@ public class stacker{
 	
 	
 	//constructor 
-	public myListenerKccVersion(String programName, boolean debug){
+	public myListenerKccVersion2(String programName, boolean debug){
 	       
 		this.programName = programName;
 		this.debug = debug;
@@ -241,7 +241,7 @@ public class stacker{
 	
 	
 	//Constructor
-	public myListenerKccVersion(String programName){
+	public myListenerKccVersion2(String programName){
 	       
 		this.programName = programName;
 		debug = false;
@@ -386,7 +386,9 @@ public class stacker{
 	public void exitDeclare(KnightCodeParser.DeclareContext ctx){
 		if(exit)
 			return;
-
+			
+		printHashMap(SymbolTable);
+		
 		//enter = true;
 		System.out.println("Exit declare");
 	}// end exitDeclare
@@ -510,7 +512,7 @@ public class stacker{
 		if(ctx.getChild(1) != null)
 			key = ctx.getChild(1).getText();
 			
-
+		System.out.println("\n"+key);	
 		if(SymbolTable.containsKey(key)){
 			currvar = SymbolTable.get(key);
 		} else {
@@ -540,7 +542,7 @@ public class stacker{
 		
 			
 			genIntStr = ctx.getChild(3).getText();
-
+			System.out.println(genIntStr);
 		}
 	
 	}// end enterSetvar
@@ -554,7 +556,7 @@ public class stacker{
 		if(exit)
 			return;
 	
-
+		System.out.println("final value of id = " + genIntStr);
 		currvar.value = genIntStr;
 		
 		
@@ -580,19 +582,19 @@ public class stacker{
     	    	genIntStr = "";
     	    	
     	    	int tempBoolElse = peek(decElseStacker);
-
+		//int tempBoolElse = Character.getNumericValue(decElseStack.charAt(0));
 		
 		if(tempBoolElse > 0){
-
+	      //if(decElseStack.length() > 3 && tempBoolElse > 0){
 		
 			int newUsage = peek(decIfStacker);
-
+			//int newUsage = Character.getNumericValue(decIfStack.charAt(0));
 		
-
+			System.out.println("current newUsage = " + newUsage );
 			
 				if(newUsage == 1){
-
-
+			      //if(decIfStack.length() > 3 && newUsage == 1){		
+					System.out.println("\nTime to visit the if else\n");
 					
 					Label temper;
 					Label tempEnd;
@@ -665,7 +667,11 @@ public class stacker{
 						}	
 							
 					}
-					
+					System.out.println("-------------------------------------------------------");	
+					System.out.println("GOTO, end label= " + tempEnd);
+					System.out.println("Visit startOfElse Label= " + temper);
+					System.out.println("current depth " + currentUsage);
+					System.out.println("-------------------------------------------------------");
 		
 					mainVisitor.visitJumpInsn(GOTO, tempEnd);
 					mainVisitor.visitLabel(temper);
@@ -673,22 +679,64 @@ public class stacker{
 					
 					pop(decElseStacker);
 					pop(decIfStacker);
+					System.out.print("updated if stacker: ");printStack(decIfStacker);
+					System.out.print("\nupdated else stacker: ");printStack(decIfStacker);
+					System.out.println();
 					
 					
+					/*
+					decElseStack = decElseStack.substring(1);
+					decIfStack = decIfStack.substring(1);
+					
+					System.out.println("updated if stack: " + decIfStack);
+					System.out.println("updated else stack: " + decElseStack);
+					*/
+					
+					
+					
+					
+					//if(decNestStack.length() != 0)
+					//	decNestStack = decNestStack.substring(1);
+					//System.out.println("Current stack = " + decNestStack);
+				
+				
+				
+					elseVisitor--;
 				} else if(newUsage > 1){
-
+					System.out.println("\nNot time for start of else yet!\n");
+					
+					
 					newUsage = pop(decIfStacker);
 					newUsage--;
 					push(decIfStacker,newUsage);
 					
-
+					System.out.print("updated if stacker: ");printStack(decIfStacker);
+					System.out.print("\nupdated else stacker: ");printStack(decElseStacker);
+					System.out.println();
+					/*
+					decIfStack = decIfStack.substring(1);
+					//decElseStack = decElseStack.substring(1);
+					
+					newUsage--;
+					//tempBoolElse--;
+					
+					decIfStack = newUsage + decIfStack;
+					//decElseStack = tempBoolElse + decElseStack;
+					
+					System.out.println("updated decIfStack: " + decIfStack);
+					System.out.println("updated decElseStack: " + decElseStack);
+					*/
 					
 				}
 			
 			
 		}// end exitSetvar
     	    	
-
+    	    	System.out.print("\nshould be updated if stacker: ");printStack(decIfStacker);
+		System.out.print("\nshould be updated else stacker: ");printStack(decElseStacker);
+		//System.out.println("newStack = " + decElseStack);
+		System.out.println("");
+    	    	
 		System.out.println("Exit setvar");
 	}
 	
@@ -730,7 +778,10 @@ public class stacker{
 			var1 = SymbolTable.get(keyID);
 			op1 = keyID;
 			
-
+			//If we want the value in the symbol table to be contained as a numerical expression instead of variable expression
+			//op1 = var1.value;
+			
+			
 			
 			operator1 = var1.memLoc;
 			
@@ -741,7 +792,7 @@ public class stacker{
 				System.out.println("------------------------------------------");
 				
 				System.out.println("Cannot perform arithmetic operations on a String");
-
+				//System.out.println("ID: " + keyID + " does not exist!");
 				exit = true;
 				return;
 			
@@ -839,7 +890,7 @@ public class stacker{
 	public void exitAddition(KnightCodeParser.AdditionContext ctx){ 
 		if(exit)
 			return;
-
+		System.out.println("Is it here?");	
 			
 		operationCount--;	
 
@@ -976,27 +1027,32 @@ public class stacker{
         	*/
         		if(compString.equals(">")){
 				
+				//System.out.println("compString equals >: " +compString.equals(">"));
 				mainVisitor.visitJumpInsn(IF_ICMPLE, label1);
+				//compString = "IF_ICMPLE"; 
 				arithmeticOperation = ">"+arithmeticOperation;
 				
 			} else if(compString.equals("<")){
 				
 				mainVisitor.visitJumpInsn(IF_ICMPGE, label1);
+				//compString = "IF_ICMPGE"; 
 				arithmeticOperation = "<"+arithmeticOperation;
 			
 			} else if(compString.equals("<>")){
 			
 				mainVisitor.visitJumpInsn(IF_ICMPEQ, label1);
+				//compString = "IF_ICMPEQ";
 				arithmeticOperation = "<>"+arithmeticOperation;
 			
 			} else if(compString.equals("=")){
 			
 				mainVisitor.visitJumpInsn(IF_ICMPNE, label1);
+				//compString = "IF_ICMPNE";	
 				arithmeticOperation = "="+arithmeticOperation;
 			
 			}
 			
-
+		//mainVisitor.visitJumpInsn(compString, label1);
 		mainVisitor.visitInsn(ICONST_1);
 		mainVisitor.visitJumpInsn(GOTO, label2);
 		mainVisitor.visitLabel(label1);
@@ -1025,7 +1081,9 @@ public class stacker{
 	public void exitComp(KnightCodeParser.CompContext ctx){ 
 		if(exit)
 			return;
-					
+			
+		//mainVisitor.visitJumpInsn(compString, Label label);
+		
 		System.out.println("Exit Comp");
 	}// end exitComp
 	
@@ -1040,7 +1098,23 @@ public class stacker{
 	
 
 
+	
+	
 
+	
+	
+	//Label[] decLabelAr = new Label[5];
+	//Label[] decLabelEndAr = new Label[5];
+
+	
+
+	/*
+	Label decLab0 = new Label();
+	Label decLab1 = new Label();
+	Label decLab2 = new Label();
+	Label decLab3 = new Label();
+	Label decLab4 = new Label();
+	*/
 	Label endDecLab0 = new Label();
 	Label endDecLab1 = new Label();
 	Label endDecLab2 = new Label();
@@ -1062,7 +1136,31 @@ public class stacker{
 	Label startOfElse7 = new Label();
 	Label startOfElse8 = new Label();
 	Label startOfElse9 = new Label();
+	/*
+	decLabelAr[0] = decLab0;
+	decLabelAr[1] = decLab1;
+	decLabelAr[2] = decLab2;
+	decLabelAr[3] = decLab3;
+	decLabelAr[4] = decLab4;
 	
+	decLabelEndAr[0] = decLab0;
+	decLabelEndAr[1] = decLab1;
+	decLabelEndAr[2] = decLab2;
+	decLabelEndAr[3] = decLab3;
+	decLabelEndAr[4] = decLab4;
+	*/
+	
+	/*
+	if(decNestStack.length() != 0)
+			decNestStack = decNestStack.substring(1);
+		System.out.println("Current stack = " + decNestStack);
+		
+		public String decNestStack += decLabCount;
+		System.out.println("Current stack = " + decNestStack);
+		public String decNestStack = "000";	
+			
+	
+	*/
 	
 	public static int ifCount1 = 0;
 	public static int elseCount1 = 0;
@@ -1102,7 +1200,7 @@ public class stacker{
 	public stacker decElseStacker = new stacker();
 
 	public boolean firstNestedDec = false;
-
+	public int elseVisitor = 0;
 	
 	
 	/**
@@ -1114,7 +1212,7 @@ public class stacker{
 	public void enterDecision(KnightCodeParser.DecisionContext ctx){ 
 		if(exit)
 			return;
-
+		System.out.println("\n\n------------------------------------------------------------------------------------------------------------");	
 		System.out.println("Enter Decision");
 		if(decLabCount > 9){
 		
@@ -1131,7 +1229,7 @@ public class stacker{
 			decCount2++;		
 		}
 		decNestStack = decLabCount + decNestStack;
-
+		System.out.println("Current decision depth = " + decNestStack);
 		
 		
 		
@@ -1145,7 +1243,22 @@ public class stacker{
 			
 		
 		decCount = ctx.getChildCount();
-
+		/*
+		System.out.println("decCount2 = " +decCount2);
+		System.out.println("decLabCount = " + decLabCount);
+		*/
+		
+		//Possible issue might occurr for nested if-else statements, because when you enter a decision these values reset.
+		//Løsning til dette kan være å ha en array med en haug med sånne her så vi kan ha "nested"-enten-eller
+		//Samme prinsippet for løkker
+		//ifCount1 = 0;
+		//elseCount1 = 0;
+		
+		
+		
+		
+		
+		
 		if(decCount < 7){
 		
 			System.out.println("\n\n------------------------------------------");
@@ -1193,6 +1306,8 @@ public class stacker{
 				System.out.println("\n\n------------------------------------------");
 				System.out.println("COMPILER ERROR");
 				System.out.println("------------------------------------------");
+			
+				//System.out.println("ELSE");
 				System.out.println("Syntax is wrong for If-Else statement at ELSE");
 			
 				exit = true;
@@ -1242,6 +1357,7 @@ public class stacker{
             			
             			
        		     } catch(NumberFormatException e){
+        			//System.out.println(e.getMessage());
         			System.out.println("\n\n------------------------------------------");
 				System.out.println("COMPILER ERROR");
 				System.out.println("------------------------------------------");
@@ -1296,7 +1412,7 @@ public class stacker{
 		}		
 			
 		decCompSymbol = ctx.getChild(2).getChild(0).getText();
-
+		//compString = ctx.getChild(2).getChild(0).getText();
 		
 		String temporaryCounterString;
 		
@@ -1307,10 +1423,28 @@ public class stacker{
 		boolean elseFound = false;
 		
 		while(tempI < decCount && !elseFound){
-	
+		
+			/*
+			if(temporaryIfCounter > 9){
+				System.out.println("\n\n------------------------------------------");
+				System.out.println("COMPILER ERROR");
+				System.out.println("------------------------------------------");
+			
+				System.out.println("If-statement overflow!");
+				System.out.println("Compiler cannot handle more than 9 statements within an If-, or else-statement.");
+				System.out.println("Label error would occur.");
+				
+				exit = true;
+				return;
+				
+			
+			}
+			*/
+		
+		
 			if(ctx.getChild(tempI).getText().equalsIgnoreCase("ELSE")){
 					prev = "ELSE";
-
+					System.out.println("Else node number is: " + (tempI)); 
 					elseNodeNum = tempI;
 					elseFound = true;
 			} else {
@@ -1318,24 +1452,31 @@ public class stacker{
 				if(!ctx.getChild(tempI).getText().equalsIgnoreCase("ENDIF")){
 					temporaryIfCounter++;
 					
-
-		
+					System.out.println(ctx.getChild(tempI).getText());
+					
+					
+					
+					/*
+					if(temporaryCounterString.length()>5)
+						temporaryCounterString = temporaryCounterString.substring(0,5);
+					*/
 					if(ctx.getChild(tempI).getText().substring(0,5).equalsIgnoreCase("WHILE")){
 				
-
+							System.out.println("Found a nested loop");
 							int t = ctx.getChild(tempI).getChild(0).getChildCount();
-
+							System.out.println("while loop node childCount = " + t);
 							int f = ctx.getChild(tempI).getChild(0).getChildCount()-6;
-
+							System.out.println("Number of statements are " + f);
 							String tempoStringer = "";							
 							int i = 5;
 							while(i<t-1){								
-
-								
+								System.out.println("checking for double nested loops");
+								//System.out.println("getChild(tempI).getText() = " + ctx.getChild(tempI).getChild(0).getText());
+		//System.out.println("getChild(tempI).getChild(0).getChild(i).getChild(0).getText() = " + ctx.getChild(tempI).getChild(0).getChild(i).getChild(0).getChild(0).getText());
 								tempoStringer = ctx.getChild(tempI).getChild(0).getChild(i).getChild(0).getChild(0).getText();
 								if(tempoStringer.length()>=5){	
 								if(ctx.getChild(tempI).getChild(0).getChild(i).getChild(0).getChild(0).getText().substring(0,5).equalsIgnoreCase("WHILE")){
-
+									System.out.println("Found a double nested loop");
 									
 									int cll = ctx.getChild(tempI).getChild(0).getChild(i).getChild(0).getChildCount();
 									int j = 5;
@@ -1365,8 +1506,14 @@ public class stacker{
 									
 									}
 								
-
+		//		     System.out.println("child count = " + ctx.getChild(tempI).getChild(0).getChild(i).getChild(0).getChildCount());
 									f+= cll-6;	
+									
+									
+									
+									
+									
+									
 								}
 								}
 								i++;
@@ -1375,6 +1522,11 @@ public class stacker{
 							
 							temporaryIfCounter += f;
 					
+						//System.out.println("--------------------------------------------------------");
+						//System.out.println("ifCount before addition: " + ifCount1);
+						//System.out.println("\nChild count: " + ctx.getChild(decCount-tempInt-2).getChild(0).getChildCount());
+						//System.out.println("ifCount after addition: " + ifCount1);
+						//System.out.println("--------------------------------------------------------");	
 					}
 			
 			
@@ -1384,51 +1536,110 @@ public class stacker{
 			tempI++;
 		}	
 		
-
+		//System.out.println("Else node number: "+ elseNodeNum);
+		System.out.println("number of statements for if: " + temporaryIfCounter);
+		
+		/*
+		decElseStack = temporaryIfCounter + decElseStack;
+		System.out.println("Current stack for else= " + decElseStack);
+		*/
 		if(elseFound){
 			
-
+			elseVisitor++;
 			while(tempI < decCount){
 			
-			
+				/*
+				if(temporaryElseCounter > 9){
+					System.out.println("\n\n------------------------------------------");
+					System.out.println("COMPILER ERROR");
+					System.out.println("------------------------------------------");
+				
+					System.out.println("Else-statement overflow!");
+					System.out.println("Compiler cannot handle more than 9 statements within an If-, or Else-statement.");
+					System.out.println("A label error would occur.");
+					
+					exit = true;
+					return;
+				
+				
+				}
+				*/
 			
 				if(!ctx.getChild(tempI).getText().equalsIgnoreCase("ENDIF")){
 					temporaryElseCounter++;
-									
+					
+					System.out.println(ctx.getChild(tempI).getText());
+				
 				}
 			
 				tempI++;
 			
 			}
-
+			System.out.println("number of statements for else: " + temporaryElseCounter);
 		
 		
 			
 		
-		} 	
+		} else {
+			System.out.println("No else statements for this one");
+		}	
 		
-	
-
+		/*
+		System.out.println("\nPrior to stack manipulation: " +decIfStack);
+		int brukOgKast = Character.getNumericValue(decIfStack.charAt(0));
+		decIfStack = decIfStack.substring(1);
+		System.out.println("mid stack manipulation: " +decIfStack);
+		brukOgKast += temporaryElseCounter;
+		decIfStack = brukOgKast + decIfStack;
+		System.out.println("post stack manipulation: " +decIfStack+ "\n");
+		*/
+		System.out.print("\nPrior to stack manipulation: ");printStack(decIfStacker);
 		int brukOgKast = pop(decIfStacker);
 		
-
-
+		System.out.println("\nbrukOgKast "+brukOgKast);
+		System.out.print("mid stack manipulation: ");printStack(decIfStacker);
 		brukOgKast += temporaryElseCounter;
 		push(decIfStacker, brukOgKast);
-
+		System.out.print("\npost stack manipulation: ");printStack(decIfStacker);
+		System.out.println("");
+		
+	
+		
+	
+	
 		push(decIfStacker, temporaryIfCounter);
-
-
+		System.out.print("decIfStack:  ");
+		printStack(decIfStacker);
+		System.out.println();
+	
+		/*
+		decIfStack = temporaryIfCounter + decIfStack;
+		System.out.println("Current stack for if: " + decIfStack);
+		decElseStack = temporaryElseCounter + decElseStack;
+		System.out.println("Current stack for else= " + decElseStack);
+		*/
 		
 		push(decElseStacker, temporaryElseCounter);
-
+		System.out.print("decElseStack:  ");
+		printStack(decElseStacker);
+		System.out.println();
+		
+		
+		
+		
 		int tempElse = elseCount1;
+		System.out.println("old else " + tempElse);
 		elseCount1 += temporaryElseCounter;
+		System.out.println("new else " + elseCount1 + "\n");
 		ifCount1 +=temporaryIfCounter;	
 				
 //---------------------------------------------------------------------------------------------------			
 			
-
+			
+		
+			System.out.println("ifCount: " + ifCount1);
+			System.out.println("elseCount: " + elseCount1);
+			
 		
 		Label temp; 
 		Label tempEnd;
@@ -1503,31 +1714,56 @@ public class stacker{
 				}		
 			}
 			
-
+			//System.out.println("decLabCount = " + decLabCount);
 		String tempStringDecBla = "ifComp... ";
 		if(elseCount1 > tempElse){
+			tempStringDecBla += "startOfElse Label: ";
+			
 		} else {
-
-			temp = tempEnd;		
+			tempStringDecBla += "end Label: ";
+			temp = tempEnd;
+				
 		}	
 		
-
+		System.out.println("-------------------------------------------------------");
+		System.out.println(tempStringDecBla + temp);	
+		System.out.println("current depth " + currentUsage);
+		System.out.println("-------------------------------------------------------");
 			if(decCompSymbol.equals(">")){
+				
+				//System.out.println("compString equals >: " +compString.equals(">"));
 				mainVisitor.visitJumpInsn(IF_ICMPLE, temp);
+				//compString = "IF_ICMPLE"; 
+				//operation = ">"+operation;
+				
 			} else if(decCompSymbol.equals("<")){
+				
 				mainVisitor.visitJumpInsn(IF_ICMPGE,temp);
+				//compString = "IF_ICMPGE"; 
+				//operation = "<"+operation;
+			
 			} else if(decCompSymbol.equals("<>")){
+			
 				mainVisitor.visitJumpInsn(IF_ICMPEQ, temp);
+				//compString = "IF_ICMPEQ";
+				//operation = "<>"+operation;
+			
 			} else if(decCompSymbol.equals("=")){
 			
-				mainVisitor.visitJumpInsn(IF_ICMPNE, temp);			
+				mainVisitor.visitJumpInsn(IF_ICMPNE, temp);
+				//compString = "IF_ICMPNE";	
+				//operation = "="+operation;
+			
 			}
 			
+		System.out.print("\nshould be updated if stacker: ");printStack(decIfStacker);
+		System.out.print("\nshould be updated else stacker: ");printStack(decElseStacker);
+		//System.out.println("newStack = " + decElseStack);
+		System.out.println("");
 	
 
 	}// end enterDecision
 	
-
 	
 	
 	@Override 
@@ -1535,8 +1771,11 @@ public class stacker{
 		if(exit)
 			return;
 		
-
+		System.out.println("decNestStack = " + decNestStack);	
+		//decCount2--;
+		//System.out.println("decCount2 = " + decCount2);
 		
+		//if(elseCount == 0){
 			Label temper; 	
 			Label temp;
 			int currentUsage = Character.getNumericValue(decNestStack.charAt(0));
@@ -1597,7 +1836,10 @@ public class stacker{
 					break;
 				
 				}
-
+				//case 6: { }
+				//case 7: { }
+				//case 8: { }
+				//case 9: { }
 				default: {
 	temper = startOfElse1;	
 			
@@ -1613,30 +1855,47 @@ public class stacker{
 					
 			}
 			decCount2--;
-
+		//}
+		//System.out.println("decLabCount = " + decLabCount);
+		System.out.println("-------------------------------------------------------");
+		System.out.println("Visit end label dec= " + temp);
+		System.out.println("current depth " + currentUsage);
+		//System.out.println("else label = " + temper);
+		System.out.println("-------------------------------------------------------");
 		
 		//ASM
 		mainVisitor.visitLabel(temp);
 		
 		if(decNestStack.length() != 0)
 			decNestStack = decNestStack.substring(1);
-
+		System.out.println("Updated decision depth stack after exit = " + decNestStack);
+		
+		System.out.println("decNestStack.charAt(0) = " + decNestStack.charAt(0));
+		System.out.println("elseStack head = " + decElseStacker.head);
+		
+		//pop(decIfStacker);
+		//pop(decElseStacker);
+		System.out.print("\nshould be updated if stacker: ");printStack(decIfStacker);
+		System.out.print("\nshould be updated else stacker: ");printStack(decElseStacker);
+		//System.out.println("newStack = " + decElseStack);
+		System.out.println("");
 		
 		
 		
 		int tempBoolElse = peek(decElseStacker);
-
+		//int tempBoolElse = Character.getNumericValue(decElseStack.charAt(0));
 		int newUsage;
 		if(tempBoolElse > 0){
-
+	      //if(decElseStack.length() > 3 && tempBoolElse > 0){
 		
 			newUsage = peek(decIfStacker);
-
+			//int newUsage = Character.getNumericValue(decIfStack.charAt(0));
 		
-
+			System.out.println("current newUsage = " + newUsage );
 			
 				if(newUsage == 1){
-;
+			      //if(decIfStack.length() > 3 && newUsage == 1){		
+					System.out.println("\nTime to visit the if else\n");
 					
 			
 					Label tempEnd;
@@ -1709,7 +1968,11 @@ public class stacker{
 						}	
 							
 					}
-					
+					System.out.println("-------------------------------------------------------");	
+					System.out.println("GOTO, end label= " + tempEnd);
+					System.out.println("Visit startOfElse Label= " + temper);
+					System.out.println("current depth " + currentUsage);
+					System.out.println("-------------------------------------------------------");
 		
 					mainVisitor.visitJumpInsn(GOTO, tempEnd);
 					mainVisitor.visitLabel(temper);
@@ -1717,17 +1980,55 @@ public class stacker{
 					
 					pop(decElseStacker);
 					pop(decIfStacker);
+					System.out.print("updated if stacker: ");printStack(decIfStacker);
+					System.out.print("\nupdated else stacker: ");printStack(decElseStacker);
+					System.out.println();
+					
+					
+					
+					
+					/*
+					decElseStack = decElseStack.substring(1);
+					decIfStack = decIfStack.substring(1);
+					
+					System.out.println("updated if stack: " + decIfStack);
+					System.out.println("updated else stack: " + decElseStack);
+					*/
+					
+					
+					
+					
+					//if(decNestStack.length() != 0)
+					//	decNestStack = decNestStack.substring(1);
+					//System.out.println("Current stack = " + decNestStack);
 				
-
+				
+				
+					elseVisitor--;
 				} else if(newUsage > 1){
-
+					System.out.println("\nNot time for start of else yet!\n");
 					
 					
 					newUsage = pop(decIfStacker);
 					newUsage--;
 					push(decIfStacker,newUsage);
 					
-				
+					System.out.print("updated if stacker: ");printStack(decIfStacker);
+					System.out.print("\nupdated else stacker: ");printStack(decIfStacker);
+					System.out.println();
+					/*
+					decIfStack = decIfStack.substring(1);
+					//decElseStack = decElseStack.substring(1);
+					
+					newUsage--;
+					//tempBoolElse--;
+					
+					decIfStack = newUsage + decIfStack;
+					//decElseStack = tempBoolElse + decElseStack;
+					
+					System.out.println("updated decIfStack: " + decIfStack);
+					System.out.println("updated decElseStack: " + decElseStack);
+					*/
 					
 				}
 			
@@ -1735,7 +2036,7 @@ public class stacker{
 		
 		} else {
 		
-
+			System.out.println("elsecount is less than 1");
 			pop(decIfStacker);
 			pop(decElseStacker);
 			newUsage = pop(decIfStacker);
@@ -1744,9 +2045,15 @@ public class stacker{
 			
 		
 		}
-
+		
+		System.out.print("\nshould be updated if stacker: ");printStack(decIfStacker);
+		System.out.print("\nshould be updated else stacker: ");printStack(decElseStacker);
+		//System.out.println("newStack = " + decElseStack);
+		System.out.println("");
+			
+		
 		System.out.println("Exit Decision");
-
+		System.out.println("------------------------------------------------------------------------------------------------------------\n\n");
 
 	}// end exitDecision
 	
@@ -1760,7 +2067,7 @@ public class stacker{
 	public void enterPrint(KnightCodeParser.PrintContext ctx){
 		if(exit)
 			return;
-
+		//System.out.println("-----------------------------------------------------------------");
 		System.out.println("Enter print");
 
 		
@@ -1793,24 +2100,24 @@ public class stacker{
 	public void exitPrint(KnightCodeParser.PrintContext ctx){ 
 		if(exit)
 			return;
-
+		//Label printskip = new Label();
 	
 		
 		if(genPrint){
-
+			System.out.println("\nString will be printed to bytecode file\n");
 			
 			
 			mainVisitor.visitLdcInsn(outputString);
 			mainVisitor.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/io/PrintStream",  "println", "(Ljava/lang/String;)V", false);
 		} else {
 			if(printString){
-
+				System.out.println("\nString will be printed to bytecode file\n");
 				
 				
 				mainVisitor.visitVarInsn(ALOAD, outputInt);
 				mainVisitor.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "java/io/PrintStream",  "println", "(Ljava/lang/String;)V", false);
 			} else {
-
+				System.out.println("\nInt will be printed to bytecode file\n");
 				
 				
 				mainVisitor.visitVarInsn(Opcodes.ILOAD, outputInt);
@@ -1820,19 +2127,19 @@ public class stacker{
 		
 		
 		int tempBoolElse = peek(decElseStacker);
-
+		//int tempBoolElse = Character.getNumericValue(decElseStack.charAt(0));
 		
 		if(tempBoolElse > 0){
-
+	      //if(decElseStack.length() > 3 && tempBoolElse > 0){
 		
 			int newUsage = peek(decIfStacker);
-
+			//int newUsage = Character.getNumericValue(decIfStack.charAt(0));
 		
-
+			System.out.println("current newUsage = " + newUsage );
 			
 				if(newUsage == 1){
-
-
+			      //if(decIfStack.length() > 3 && newUsage == 1){		
+					System.out.println("\nTime to visit the if else\n");
 					
 					Label temper;
 					Label tempEnd;
@@ -1905,33 +2212,222 @@ public class stacker{
 						}	
 							
 					}
-				
+					System.out.println("-------------------------------------------------------");	
+					System.out.println("GOTO, end label= " + tempEnd);
+					System.out.println("Visit startOfElse Label= " + temper);
+					System.out.println("current depth " + currentUsage);
+					System.out.println("-------------------------------------------------------");
+		
 					mainVisitor.visitJumpInsn(GOTO, tempEnd);
 					mainVisitor.visitLabel(temper);
 					
 					
 					pop(decElseStacker);
 					pop(decIfStacker);
+					System.out.print("updated if stacker: ");printStack(decIfStacker);
+					System.out.print("\nupdated else stacker: ");printStack(decElseStacker);
+					System.out.println();
+					
+					
+					/*
+					decElseStack = decElseStack.substring(1);
+					decIfStack = decIfStack.substring(1);
+					
+					System.out.println("updated if stack: " + decIfStack);
+					System.out.println("updated else stack: " + decElseStack);
+					*/
+					
+					
+					
+					
+					//if(decNestStack.length() != 0)
+					//	decNestStack = decNestStack.substring(1);
+					//System.out.println("Current stack = " + decNestStack);
 				
 				
+				
+					elseVisitor--;
 				} else if(newUsage > 1){
-
+					System.out.println("\nNot time for start of else yet!\n");
 					
 					
 					newUsage = pop(decIfStacker);
 					newUsage--;
 					push(decIfStacker,newUsage);
 					
+					System.out.print("updated if stacker: ");printStack(decIfStacker);
+					System.out.print("\nupdated else stacker: ");printStack(decElseStacker);
+					System.out.println();
+					/*
+					decIfStack = decIfStack.substring(1);
+					//decElseStack = decElseStack.substring(1);
+					
+					newUsage--;
+					//tempBoolElse--;
+					
+					decIfStack = newUsage + decIfStack;
+					//decElseStack = tempBoolElse + decElseStack;
+					
+					System.out.println("updated decIfStack: " + decIfStack);
+					System.out.println("updated decElseStack: " + decElseStack);
+					*/
 					
 				}
 			
 			
 		}
-
+		
+		System.out.print("\nshould be updated if stacker: ");printStack(decIfStacker);
+		System.out.print("\nshould be updated else stacker: ");printStack(decElseStacker);
+		//System.out.println("newStack = " + decElseStack);
+		System.out.println("");
+		
+	
 		System.out.println("Exit print");
 	}// end exitPrint
-
 	
+	
+	public void ifElseLabeler(){
+		int tempBoolElse = peek(decElseStacker);
+			//int tempBoolElse = Character.getNumericValue(decElseStack.charAt(0));
+		
+			if(tempBoolElse > 0){
+		      //if(decElseStack.length() > 3 && tempBoolElse > 0){
+			
+				int newUsage = peek(decIfStacker);
+				//int newUsage = Character.getNumericValue(decIfStack.charAt(0));
+			
+				System.out.println("current newUsage = " + newUsage );
+				
+					if(newUsage == 1){
+				      //if(decIfStack.length() > 3 && newUsage == 1){		
+						System.out.println("\nTime to visit the if else\n");
+						
+						Label temper;
+						Label tempEnd;
+				 		int currentUsage = Character.getNumericValue(decNestStack.charAt(0));
+						switch(currentUsage){
+							case 1: {
+								tempEnd = endDecLab0;
+								temper = startOfElse0;						
+								break;
+							}
+							case 2: {
+								tempEnd = endDecLab1;
+								temper = startOfElse1;
+								break;
+							}
+							case 3: {
+								tempEnd = endDecLab2;
+								temper = startOfElse2;						
+								break;
+							}
+							case 4: {
+								tempEnd = endDecLab3;
+								temper = startOfElse3;
+								break;
+							}
+							case 5: {
+								tempEnd = endDecLab4;
+								temper = startOfElse4;
+								break;
+							}
+							case 6: {						
+								tempEnd = endDecLab5;
+								temper = startOfElse5;
+								break;
+							}
+							case 7: { 						
+								tempEnd = endDecLab6;
+								temper = startOfElse6;
+								break;
+						
+							}
+							case 8: {
+								tempEnd = endDecLab7;
+								temper = startOfElse7;
+								break;
+						
+							}
+							case 9: { 
+								tempEnd = endDecLab8;
+								temper = startOfElse8;
+								break;
+							
+							}
+							case 10: { 
+								tempEnd = endDecLab9;
+								temper = startOfElse9;
+								break;
+						
+							}
+							default: {
+							
+								System.out.println("\n\n------------------------------------------");
+								System.out.println("COMPILER ERROR");
+								System.out.println("------------------------------------------");
+							
+								System.out.println("jump label failure for if-else statement in print!");
+								
+								exit = true;
+								return;
+							}	
+								
+						}
+						System.out.println("-------------------------------------------------------");	
+						System.out.println("GOTO, end label= " + tempEnd);
+						System.out.println("Visit startOfElse Label= " + temper);
+						System.out.println("current depth " + currentUsage);
+						System.out.println("-------------------------------------------------------");
+			
+						mainVisitor.visitJumpInsn(GOTO, tempEnd);
+						mainVisitor.visitLabel(temper);
+						
+						
+						pop(decElseStacker);
+						pop(decIfStacker);
+						System.out.print("updated if stacker: ");printStack(decIfStacker);
+						System.out.print("\nupdated else stacker: ");printStack(decElseStacker);
+						System.out.println();
+						
+						
+					
+						decElseStack = decElseStack.substring(1);
+						decIfStack = decIfStack.substring(1);
+						
+						System.out.println("updated if stack: " + decIfStack);
+						System.out.println("updated else stack: " + decElseStack);
+					
+					
+						//elseVisitor--;
+						
+					} else if(newUsage > 1){
+						System.out.println("\nNot time for start of else yet!\n");
+						
+						
+						newUsage = pop(decIfStacker);
+						newUsage--;
+						push(decIfStacker,newUsage);
+						
+						System.out.print("updated if stacker: ");printStack(decIfStacker);
+						System.out.print("\nupdated else stacker: ");printStack(decElseStacker);
+						System.out.println();
+						
+					
+						
+					}
+				
+				
+			}
+			
+			System.out.print("\nshould be updated if stacker: ");printStack(decIfStacker);
+			System.out.print("\nshould be updated else stacker: ");printStack(decElseStacker);
+			
+			System.out.println("");
+	}
+		
+				
+			
 	public boolean alreadyRead = false;
 	public int readStoredLocation;
 	/**
@@ -1949,7 +2445,7 @@ public class stacker{
 		if(ctx.getChild(1) != null)
 			key = ctx.getChild(1).getText();
 			
-
+		System.out.println("\n"+key);	
 		if(SymbolTable.containsKey(key)){
 			currvar = SymbolTable.get(key);
 		} else {
@@ -1963,10 +2459,23 @@ public class stacker{
 		
 		}
 		
+		
+		/*
+		
+	    methodVisitor.visitTypeInsn(NEW, "java/util/Scanner");
+            methodVisitor.visitInsn(DUP);
+            methodVisitor.visitFieldInsn(GETSTATIC,"java/lang/System", "in", "Ljava/io/InputStream;");
+            methodVisitor.visitMethodInsn(INVOKESPECIAL, "java/util/Scanner", "<init>", "(Ljava/io/InputStream;)V" , false);
+            methodVisitor.visitVarInsn(ASTORE,store);
+		
+		*/
 
 
-		if(!alreadyRead){
-
+		if(alreadyRead){
+			
+		
+		
+		} else {
 			alreadyRead = true;
 			
 			readStoredLocation = memoryCounter;
@@ -1994,7 +2503,11 @@ public class stacker{
 		if(exit)
 			return;
 			
-
+			
+	
+	
+		
+		System.out.println("ALOAD, readStoredLocation");
 		mainVisitor.visitVarInsn(ALOAD,readStoredLocation);
 		
 		
@@ -2004,14 +2517,18 @@ public class stacker{
 			
 		if(genBool){
 	
+			System.out.println("INVOKEVIRTUAL, nextLine");
+			System.out.println("ASTORE, " + currvar.memLoc);
+			
 			mainVisitor.visitMethodInsn(INVOKEVIRTUAL, "java/util/Scanner", "nextLine", "()Ljava/lang/String;", false);
 			mainVisitor.visitVarInsn(ASTORE,currvar.memLoc);
 			
-
+			//mainVisitor.visitLdcInsn(currvar.value);
 			
 		} else {
 		
-
+			System.out.println("INVOKEVIRTUAL, nextInt");
+			System.out.println("ISTORE, " + currvar.memLoc);
 			
 			mainVisitor.visitMethodInsn(INVOKEVIRTUAL, "java/util/Scanner", "nextInt", "()I", false);
 			mainVisitor.visitVarInsn(ISTORE,currvar.memLoc);
@@ -2023,23 +2540,24 @@ public class stacker{
 			
 		}
 		
-
+		//currvar.value = "Value read from input";
 		currvar.valueSet = true;
 		SymbolTable.put(key, currvar);
 		
 		int tempBoolElse = peek(decElseStacker);
-
+		//int tempBoolElse = Character.getNumericValue(decElseStack.charAt(0));
 		
 		if(tempBoolElse > 0){
-
+	      //if(decElseStack.length() > 3 && tempBoolElse > 0){
 		
 			int newUsage = peek(decIfStacker);
-
+			//int newUsage = Character.getNumericValue(decIfStack.charAt(0));
 		
-
+			System.out.println("current newUsage = " + newUsage );
 			
 				if(newUsage == 1){
-
+			      //if(decIfStack.length() > 3 && newUsage == 1){		
+					System.out.println("\nTime to visit the if else\n");
 					
 					Label temper;
 					Label tempEnd;
@@ -2112,25 +2630,79 @@ public class stacker{
 						}	
 							
 					}
-			
+					System.out.println("-------------------------------------------------------");	
+					System.out.println("GOTO, end label= " + tempEnd);
+					System.out.println("Visit startOfElse Label= " + temper);
+					System.out.println("current depth " + currentUsage);
+					System.out.println("-------------------------------------------------------");
+		
 					mainVisitor.visitJumpInsn(GOTO, tempEnd);
 					mainVisitor.visitLabel(temper);
 					
 					
 					pop(decElseStacker);
 					pop(decIfStacker);
+					System.out.print("updated if stacker: ");printStack(decIfStacker);
+					System.out.print("\nupdated else stacker: ");printStack(decIfStacker);
+					System.out.println();
 					
+					
+					/*
+					decElseStack = decElseStack.substring(1);
+					decIfStack = decIfStack.substring(1);
+					
+					System.out.println("updated if stack: " + decIfStack);
+					System.out.println("updated else stack: " + decElseStack);
+					*/
+					
+					
+					
+					
+					//if(decNestStack.length() != 0)
+					//	decNestStack = decNestStack.substring(1);
+					//System.out.println("Current stack = " + decNestStack);
+				
+				
+				
+					elseVisitor--;
 				} else if(newUsage > 1){
-
+					System.out.println("\nNot time for start of else yet!\n");
 					
 					
 					newUsage = pop(decIfStacker);
 					newUsage--;
 					push(decIfStacker,newUsage);
+					
+					System.out.print("updated if stacker: ");printStack(decIfStacker);
+					System.out.print("\nupdated else stacker: ");printStack(decElseStacker);
+					System.out.println();
+					/*
+					decIfStack = decIfStack.substring(1);
+					//decElseStack = decElseStack.substring(1);
+					
+					newUsage--;
+					//tempBoolElse--;
+					
+					decIfStack = newUsage + decIfStack;
+					//decElseStack = tempBoolElse + decElseStack;
+					
+					System.out.println("updated decIfStack: " + decIfStack);
+					System.out.println("updated decElseStack: " + decElseStack);
+					*/
+					
 				}
 			
 			
 		}
+		
+		
+		System.out.print("\nshould be updated if stacker: ");printStack(decIfStacker);
+		System.out.print("\nshould be updated else stacker: ");printStack(decElseStacker);
+		//System.out.println("newStack = " + decElseStack);
+		System.out.println("");
+		
+		
+		
 		System.out.println("Exit read\n");
 		
 
@@ -2201,8 +2773,12 @@ public class stacker{
 			loopCount++;		
 		}
 		loopNestStack = loopLabCount + loopNestStack;
-
-
+		System.out.println("Current stack = " + loopNestStack);	
+	
+		/*
+		decNestStack = decLabCount + decNestStack;
+		System.out.println("Current stack = " + decNestStack);
+		*/
 		int syntaxTest = ctx.getChildCount();
 		if(syntaxTest < 7){
 		
@@ -2335,7 +2911,12 @@ public class stacker{
 		
 		//ASM stuff
 		mainVisitor.visitLabel(temp);
-
+		
+		//String loopOp1;
+		//int loopOperator1;
+		//String loopOp2;
+		//int loopOperator2;
+		//String loopCompSymbol;
 		
 		loopOp1 = ctx.getChild(1).getText();
 		if(SymbolTable.containsKey(loopOp1)){
@@ -2366,7 +2947,7 @@ public class stacker{
             			
             			
        		     } catch(NumberFormatException e){
-
+        			//System.out.println(e.getMessage());
         			System.out.println("\n\n------------------------------------------");
 				System.out.println("COMPILER ERROR");
 				System.out.println("------------------------------------------");
@@ -2424,22 +3005,36 @@ public class stacker{
 	
 		if(loopCompSymbol.equals(">")){
 				
-
+				//System.out.println("compString equals >: " +compString.equals(">"));
 				mainVisitor.visitJumpInsn(IF_ICMPLE, tempEnd);
-
-			} else if(decCompSymbol.equals("<")){	
+				//compString = "IF_ICMPLE"; 
+				//operation = ">"+operation;
+				
+			} else if(decCompSymbol.equals("<")){
+				
 				mainVisitor.visitJumpInsn(IF_ICMPGE,tempEnd);
+				//compString = "IF_ICMPGE"; 
+				//operation = "<"+operation;
 			
 			} else if(decCompSymbol.equals("<>")){
 			
 				mainVisitor.visitJumpInsn(IF_ICMPEQ, tempEnd);
+				//compString = "IF_ICMPEQ";
+				//operation = "<>"+operation;
 			
 			} else if(decCompSymbol.equals("=")){
 			
 				mainVisitor.visitJumpInsn(IF_ICMPNE, tempEnd);
+				//compString = "IF_ICMPNE";	
+				//operation = "="+operation;
 			
 			}
-
+			
+			System.out.println("-------------------------------------------------------");
+			System.out.println("Visit Start of loop label = " + temp);
+			System.out.println("IFICMP, " + tempEnd);
+			System.out.println("-------------------------------------------------------");
+		
 			syntaxTest = ctx.getChildCount() - 6;		
 		
 	}// end enterLoop
@@ -2512,6 +3107,10 @@ public class stacker{
 					break;
 				
 				}
+				//case 6: { }
+				//case 7: { }
+				//case 8: { }
+				//case 9: { }
 				default: {
 	
 			
@@ -2527,6 +3126,12 @@ public class stacker{
 					
 			}
 			
+		
+		System.out.println("-------------------------------------------------------");
+		System.out.println("GOTO = " + temper);
+		System.out.println("Visit end label loop = " + temp);
+		System.out.println("-------------------------------------------------------");
+		
 		//ASM
 		mainVisitor.visitJumpInsn(GOTO,temper);
 		mainVisitor.visitLabel(temp);
@@ -2535,16 +3140,24 @@ public class stacker{
 		if(loopNestStack.length() != 0)
 			loopNestStack = loopNestStack.substring(1);
 		
-
+		System.out.println("Current stack = " + loopNestStack);	
 			
 		int tempBoolElse = peek(decElseStacker);
-
-		if(tempBoolElse > 0){
-			int newUsage = peek(decIfStacker);
+		//int tempBoolElse = Character.getNumericValue(decElseStack.charAt(0));
 		
-
+		if(tempBoolElse > 0){
+	      //if(decElseStack.length() > 3 && tempBoolElse > 0){
+		
+			int newUsage = peek(decIfStacker);
+			//int newUsage = Character.getNumericValue(decIfStack.charAt(0));
+		
+			System.out.println("current newUsage = " + newUsage );
 			
 				if(newUsage == 1){
+			      //if(decIfStack.length() > 3 && newUsage == 1){		
+					System.out.println("\nTime to visit the if else\n");
+					
+					
 					Label tempEnd;
 			 		currentUsage = Character.getNumericValue(decNestStack.charAt(0));
 					switch(currentUsage){
@@ -2615,30 +3228,96 @@ public class stacker{
 						}	
 							
 					}
-
+					System.out.println("-------------------------------------------------------");	
+					System.out.println("GOTO, end label= " + tempEnd);
+					System.out.println("Visit startOfElse Label= " + temper);
+					System.out.println("current depth " + currentUsage);
+					System.out.println("-------------------------------------------------------");
+		
 					mainVisitor.visitJumpInsn(GOTO, tempEnd);
 					mainVisitor.visitLabel(temper);
 					
 					
 					pop(decElseStacker);
 					pop(decIfStacker);
-
+					System.out.print("updated if stacker: ");printStack(decIfStacker);
+					System.out.print("\nupdated else stacker: ");printStack(decElseStacker);
+					System.out.println();
+					
+					
+					/*
+					decElseStack = decElseStack.substring(1);
+					decIfStack = decIfStack.substring(1);
+					
+					System.out.println("updated if stack: " + decIfStack);
+					System.out.println("updated else stack: " + decElseStack);
+					*/
+					
+					
+					
+					
+					//if(decNestStack.length() != 0)
+					//	decNestStack = decNestStack.substring(1);
+					//System.out.println("Current stack = " + decNestStack);
+				
+				
+				
+					elseVisitor--;
 				} else if(newUsage > 1){
-
+					System.out.println("\nNot time for start of else yet!\n");
 					
 					
 					newUsage = pop(decIfStacker);
 					newUsage--;
 					push(decIfStacker,newUsage);
 					
+					System.out.print("updated if stacker: ");printStack(decIfStacker);
+					System.out.print("\nupdated else stacker: ");printStack(decElseStacker);
+					System.out.println();
+					
+					/*
+					decIfStack = decIfStack.substring(1);
+					//decElseStack = decElseStack.substring(1);
+					
+					newUsage--;
+					//tempBoolElse--;
+					
+					decIfStack = newUsage + decIfStack;
+					//decElseStack = tempBoolElse + decElseStack;
+					
+					System.out.println("updated decIfStack: " + decIfStack);
+					System.out.println("updated decElseStack: " + decElseStack);
+					*/
+					
 				}
-						
+			
+			
 		}
 	
-
+		
+		System.out.print("\nshould be updated if stacker: ");printStack(decIfStacker);
+		System.out.print("\nshould be updated else stacker: ");printStack(decElseStacker);
+		//System.out.println("newStack = " + decElseStack);
+		System.out.println("");
+			
 		System.out.println("Exit loop");
 
 	}// end exitLoop
 	
+	
+	/**
+	 * Prints context string. Used for debugging purposes
+	 * @param ctx
+	 */
+	private void printContext(String ctx){
+		System.out.println(ctx);
+	}
+	@Override 
+	public void enterEveryRule(ParserRuleContext ctx){
+	 	if(debug) 
+	 		printContext(ctx.getText()); 
+	 }
+
+
 }//end class
 
