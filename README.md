@@ -13,6 +13,6 @@ From there, the command "java output/Program1" would run the java bytecode creat
 
  
    
-Emil Bergis   
+Emil Bjørlykke Berglund  
 Denys Ladden   
 Adam Fischer   
