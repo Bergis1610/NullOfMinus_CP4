@@ -138,13 +138,8 @@ public class stacker{
 	public boolean genBool;
 	public boolean genPrint;
 	public boolean expre;
-	public boolean expression1;
-	public boolean printTwice;
-	//public boolean enter;
-	//public boolean parenthesisWait;
-	
+	public boolean printTwice;	
 	public int memoryCounter = 1;
-	//public boolean changeVar;
 	
 	
 	/*
@@ -169,7 +164,9 @@ public class stacker{
 		
 	}// end printHashMap
 	
-	// this method determines whether or not a variable is a string, making this process faster with no duplicate code when this is required
+	/*
+	 * This method determines whether or not a variable is a string, making this process faster with no duplicate code when this is required
+	 */
 	public boolean isString(variable var){
 		
 		if(var.variableType.equals(STR))
@@ -180,14 +177,13 @@ public class stacker{
 	/*
 	 * The following methods are stack methods, that print, push, pop or peek the stack
 	 */
-	
 	public void printStack(stacker s){
 	
 		for(int i = s.head;i>= 0;i--){
 			System.out.print(s.stack[i]+",");
 		}	
 	
-	}// end pringStack
+	}// end printStack
 	
 	public int push(stacker s, int value){
 	
@@ -199,7 +195,7 @@ public class stacker{
 			return value;
 		}
 	
-	}
+	}//end push
 	
 	public int pop(stacker s){
 	
@@ -214,7 +210,7 @@ public class stacker{
 			return value;
 		}
 	
-	}
+	}//end pop
 	
 	
 	public int peek(stacker s){
@@ -222,7 +218,7 @@ public class stacker{
 		return s.stack[s.head];
 		
 	
-	}
+	}//end peek
 
 	
 //End general stuff	
@@ -249,23 +245,11 @@ public class stacker{
 	}//end constructor
 
 
-	//Labels
-	/*
-		//public static Label label1 = new Label();
-        	//public static Label label2 = new Label();
-        	public static Label label3 = new Label();
-        	public static Label label4 = new Label();
-        	Label startOfLoop = new Label();
-        	Label endOfLoop = new Label();
-            	Label returnl = new Label();
-            	public Label printSkipIf = new Label();
-            	public Label printSkipElse = new Label();
-            	public Label secondPart = new Label();
-	*/
+	
 
 	/*
 	 * The setupClass method creates the class writer for all of the ASM in the listener so that the program can write to java bytecode
-	*/
+	 */
 	public void setupClass(){
 	
 		if(exit)
@@ -300,7 +284,7 @@ public class stacker{
 		
 	/*
 	 * This method is the counterpart to setupClass. It closes the class writer and outputs the resulting bytecode to the specified class file
-	*/
+	 */
 	public void closeClass(){
 	
 		if(exit)
@@ -496,8 +480,9 @@ public class stacker{
 
 
 	/*
-	 * While enterVariable creates entries in the SymbolTable, Setvar actually defines the values of these entries. Additionally, this checks for errors when the datatype is incorrect or when the variable was not declared earlier
-	*/
+	 * While enterVariable creates entries in the SymbolTable, Setvar actually defines the values of these entries. 
+	 * Additionally, this checks for errors when the datatype is incorrect or when the variable was not declared earlier
+	 */
 	@Override 
 	public void enterSetvar(KnightCodeParser.SetvarContext ctx){ 
 		if(exit)
@@ -548,7 +533,7 @@ public class stacker{
 
 	/*
 	 * This method sends the actual value of the variable to a specific location in memory with ASM and keeps track of this location within the SymbolTable
-	*/
+	 */
 	@Override 
 	public void exitSetvar(KnightCodeParser.SetvarContext ctx){ 
 		if(exit)
@@ -580,20 +565,10 @@ public class stacker{
     	    	genIntStr = "";
     	    	
     	    	int tempBoolElse = peek(decElseStacker);
-
-		
 		if(tempBoolElse > 0){
-
-		
-			int newUsage = peek(decIfStacker);
-
-		
-
-			
+			int newUsage = peek(decIfStacker);			
 				if(newUsage == 1){
 
-
-					
 					Label temper;
 					Label tempEnd;
 			 		int currentUsage = Character.getNumericValue(decNestStack.charAt(0));
@@ -665,32 +640,19 @@ public class stacker{
 						}	
 							
 					}
-					
-		
 					mainVisitor.visitJumpInsn(GOTO, tempEnd);
 					mainVisitor.visitLabel(temper);
-					
-					
 					pop(decElseStacker);
-					pop(decIfStacker);
-					
-					
+					pop(decIfStacker);	
 				} else if(newUsage > 1){
 
 					newUsage = pop(decIfStacker);
 					newUsage--;
 					push(decIfStacker,newUsage);
-					
-
-					
 				}
-			
-			
-		}// end exitSetvar
-    	    	
-
+		}
 		System.out.println("Exit setvar");
-	}
+	}// end exitSetvar
 	
 	public String enterAndExitNumber;
 	
@@ -701,7 +663,7 @@ public class stacker{
 		System.out.println("Enter Number");
 		enterAndExitNumber = ctx.getText();
 		genIntStr += enterAndExitNumber;			
-	}
+	}//End enterNumber
 	
 	@Override 
 	public void exitNumber(KnightCodeParser.NumberContext ctx){ 
@@ -711,7 +673,7 @@ public class stacker{
 		num = Integer.valueOf(enterAndExitNumber);	
 		mainVisitor.visitIntInsn(SIPUSH, num);
 		System.out.println("Exit Number");
-	}
+	}//end exitNumber
 	
 	
 	
@@ -721,20 +683,14 @@ public class stacker{
 		if(exit)
 			return;
 		System.out.println("enter ID");
-		
-	
-		
 		keyID = ctx.getText();
 		
 		if(SymbolTable.containsKey(keyID)){
 			var1 = SymbolTable.get(keyID);
 			op1 = keyID;
-			
-
-			
+	
 			operator1 = var1.memLoc;
-			
-			
+					
 			if(var1.variableType.equalsIgnoreCase(STR) && operationCount > 0){
 				System.out.println("\n\n------------------------------------------");
 				System.out.println("COMPILER ERROR");
@@ -936,9 +892,6 @@ public class stacker{
 		System.out.println("Exit subtraction");
 
 	}// end exitSubtraction
-	
-	
-	
 
 	/**
 	 * Comparison
@@ -966,14 +919,7 @@ public class stacker{
 			return;		       
 		Label label1 = new Label();
         	Label label2 = new Label();
-        	
-        	//Tests
-        	/*
-        	System.out.println("compString equals >: " +compString.equals(">"));
-        	System.out.println("compString equals <: " +compString.equals("<"));
-        	System.out.println("compString equals <>: " +compString.equals("<>"));
-        	System.out.println("compString equals =: " +compString.equals("="));	
-        	*/
+   
         		if(compString.equals(">")){
 				
 				mainVisitor.visitJumpInsn(IF_ICMPLE, label1);
@@ -1029,18 +975,6 @@ public class stacker{
 		System.out.println("Exit Comp");
 	}// end exitComp
 	
-	
-
-	
-	
-
-
-
-	
-	
-
-
-
 	Label endDecLab0 = new Label();
 	Label endDecLab1 = new Label();
 	Label endDecLab2 = new Label();
@@ -1066,31 +1000,6 @@ public class stacker{
 	
 	public static int ifCount1 = 0;
 	public static int elseCount1 = 0;
-	
-	public int[]ifCounterArr = new int[10];
-	public int ifCount00 = 0;
-	public int ifCount01 = 0;
-	public int ifCount02 = 0;
-	public int ifCount03 = 0;
-	public int ifCount04 = 0;
-	public int ifCount05 = 0;
-	public int ifCount06 = 0;
-	public int ifCount07 = 0;
-	public int ifCount08 = 0;
-	public int ifCount09 = 0;
-	/*
-	ifCounterArr[0] = ifCount00;
-	ifCounterArr[1] = ifCount01;
-	ifCounterArr[2] = ifCount02;
-	ifCounterArr[3] = ifCount03;
-	ifCounterArr[4] = ifCount04;
-	ifCounterArr[5] = ifCount05;
-	ifCounterArr[6] = ifCount06;
-	ifCounterArr[7] = ifCount07;
-	ifCounterArr[8] = ifCount08;
-	ifCounterArr[9] = ifCount09;
-	*/
-
 	public static int decLabCount = 0;
 	public int decCount2 = 0;
 
@@ -1103,11 +1012,11 @@ public class stacker{
 
 	public boolean firstNestedDec = false;
 
-	
-	
 	/**
 	 * Decision
-	 *
+	 * The most complicated of the methods, it first checks that the number of decision statements are less than 10 because that would cause a label error.
+	 * Then it checks for syntax errors and adds then counts the number of If-statements and else-statements so that the rest of the program knows where to put which label where.
+	 * This design supports having nested If-Then-Else statements in a KnightCode program.
 	 *
 	 */
 	@Override 
@@ -1132,18 +1041,6 @@ public class stacker{
 		}
 		decNestStack = decLabCount + decNestStack;
 
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-			
-		
 		decCount = ctx.getChildCount();
 
 		if(decCount < 7){
@@ -1156,8 +1053,7 @@ public class stacker{
 			
 			exit = true;
 			return;
-		
-		
+
 		}
 		
 		//IF
@@ -1209,10 +1105,7 @@ public class stacker{
 			exit = true;
 			return;
 		}
-		
-		
-	
-		
+
 		decOp1 = ctx.getChild(1).getText();
 		if(SymbolTable.containsKey(decOp1)){
 			var1 = SymbolTable.get(decOp1);
@@ -1400,19 +1293,11 @@ public class stacker{
 				tempI++;
 			
 			}
-
-		
-		
-			
 		
 		} 	
-		
-	
 
 		int brukOgKast = pop(decIfStacker);
 		
-
-
 		brukOgKast += temporaryElseCounter;
 		push(decIfStacker, brukOgKast);
 
@@ -1427,9 +1312,7 @@ public class stacker{
 		ifCount1 +=temporaryIfCounter;	
 				
 //---------------------------------------------------------------------------------------------------			
-			
-
-		
+	
 		Label temp; 
 		Label tempEnd;
 		
@@ -1526,10 +1409,6 @@ public class stacker{
 	
 
 	}// end enterDecision
-	
-
-	
-	
 	@Override 
 	public void exitDecision(KnightCodeParser.DecisionContext ctx){ 
 		if(exit)
@@ -1620,24 +1499,11 @@ public class stacker{
 		
 		if(decNestStack.length() != 0)
 			decNestStack = decNestStack.substring(1);
-
-		
-		
-		
 		int tempBoolElse = peek(decElseStacker);
-
 		int newUsage;
 		if(tempBoolElse > 0){
-
-		
 			newUsage = peek(decIfStacker);
-
-		
-
-			
-				if(newUsage == 1){
-;
-					
+				if(newUsage == 1){;
 			
 					Label tempEnd;
 			 		currentUsage = Character.getNumericValue(decNestStack.charAt(0));
@@ -1725,14 +1591,8 @@ public class stacker{
 					
 					newUsage = pop(decIfStacker);
 					newUsage--;
-					push(decIfStacker,newUsage);
-					
-				
-					
+					push(decIfStacker,newUsage);	
 				}
-			
-			
-		
 		} else {
 		
 
@@ -1741,8 +1601,6 @@ public class stacker{
 			newUsage = pop(decIfStacker);
 			newUsage--;
 			push(decIfStacker,newUsage);
-			
-		
 		}
 
 		System.out.println("Exit Decision");
@@ -1753,7 +1611,8 @@ public class stacker{
 	
 	/**
 	 * Print
-	 *
+	 * This method determines whether the data to be printed is an Identifier or a string, 
+	 * and then either loads the memory location of that identifier from the symbol table, or prints the string from the constant pool.
 	 *
 	 */
 	@Override
@@ -1787,8 +1646,7 @@ public class stacker{
 		}
 		
 	
-	}//end enterWrite_stmt
-
+	}//end enterPrint
 	@Override 
 	public void exitPrint(KnightCodeParser.PrintContext ctx){ 
 		if(exit)
@@ -1936,7 +1794,7 @@ public class stacker{
 	public int readStoredLocation;
 	/**
 	 * Read
-	 *
+	 * Creates and initializes a scanner instance if not already created and then reads the input and stores it in the appropriate memory location using the symbol table.
 	 *
 	 */
 	@Override 
@@ -1987,8 +1845,6 @@ public class stacker{
 
 	
 	}// end enterRead
-	
-	
 	@Override 
 	public void exitRead(KnightCodeParser.ReadContext ctx){ 
 		if(exit)
@@ -2177,7 +2033,7 @@ public class stacker{
 	
 	/**
 	 * Loop
-	 *
+	 * Similar, yet simpler than the decision method, it works in the same way. It counts and remembers the depth of the loop through stacks.
 	 *
 	 */
 	@Override 
@@ -2443,8 +2299,6 @@ public class stacker{
 			syntaxTest = ctx.getChildCount() - 6;		
 		
 	}// end enterLoop
-	
-	
 	@Override 
 	public void exitLoop(KnightCodeParser.LoopContext ctx){ 
 		if(exit)
