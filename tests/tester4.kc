@@ -1,0 +1,105 @@
+PROGRAM tester4
+  
+DECLARE
+	#1
+	INTEGER z
+	#2
+	INTEGER u	
+	#3
+	INTEGER x
+	#4
+	INTEGER bool
+	#5
+	INTEGER y
+	#6
+	INTEGER t
+	#7
+	STRING colour
+	#8 
+	#Scanner	
+
+
+	
+BEGIN
+
+
+PRINT "Please type an integer :"
+READ z
+IF z > 5 THEN 
+
+#1
+	PRINT "Please type another integer: "
+#2
+	READ u	
+#3 + 1
+	#IF STATEMENT ifStacker++
+	IF 10 > u  THEN PRINT "THE NUMBER YOU TYPED IS LESS THAN 10" ELSE PRINT "The number you typed is greater or equal to 10!" ENDIF
+#4
+	PRINT "Please type the number of repetitions: "
+#5
+	READ x
+#6
+	WHILE x > 0 DO
+		PRINT x
+		SET x := x - 1
+	ENDWHILE
+
+#7
+	PRINT "LAST THEN STATEMENT"
+	
+	
+	
+#------------------------------------------------------------------------
+	ELSE
+#------------------------------------------------------------------------
+
+#1
+#2
+	PRINT "Please type your favourite colour: "
+	READ colour
+#3
+#4
+	PRINT "Please type the number of repetitions: "
+	READ t
+#5	
+	WHILE t > 0 DO
+		PRINT colour
+		SET t := t-1
+	ENDWHILE	
+#6
+#7
+	PRINT "Do you want to print hey? Type 1 for yes or 0 for no: "
+	READ bool
+#1 + 2
+	IF bool = 1 THEN PRINT "Hey" PRINT "HOPE THIS PRINTS" PRINT "IF THIS DOESNT PRINT ITDOESNTWORK!!!!" ENDIF
+	
+
+	
+	PRINT "HERE COMES A NESTED LOOP!!"
+	PRINT ""	
+		SET x := 5
+		WHILE x > 0 DO
+			SET y := 5
+			WHILE y > 0 DO
+				PRINT "y-loop"
+				SET y := y-1
+			ENDWHILE	
+			PRINT "	X-LOOP"
+		
+
+			SET x := x-1
+		
+		ENDWHILE	
+
+	PRINT "HELLO THERE, ELSE WAS PERFORMED"
+	PRINT "LAST ELSE STATEMENT"
+ENDIF	
+
+END
+
+
+	
+
+
+
+
