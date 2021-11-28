@@ -7,14 +7,9 @@ In order to operate the compiler, you must first refer to the build.xml file whi
 
 (This particular setup requires the user either to have ant downloaded on their computer, or to manually compile all the grammar files and the compiler files. It also requires that the user has the appropriate antlr4 files necessary to build up the lexparse folder.)
 
-In summary, an example of a command to run program1 from the tests directory would be as follows: "java compiler.kcc tests/program1.kc output/Program1" (Alternatively, if you are in the compiler directory to begin with, you can drop the ' compiler.' from the command)
+In summary, an example of a command to run program1 from the tests directory would be as follows: "java compiler/kcc tests/program1.kc output/ouput1". This must be run from the NullOfMinus_CP4 folder, meaning your directory must just be the main folder.
 From there, the command "java output/Program1" would run the java bytecode created by kcc.java. 
 
-
-
-
- 
-   
 Emil Bjørlykke Berglund  
 Denys Ladden   
 Adam Fischer   
