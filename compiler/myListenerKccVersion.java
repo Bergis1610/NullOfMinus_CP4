@@ -37,6 +37,7 @@ public class myListenerKccVersion extends KnightCodeBaseListener{
  *
  * The variable object is the second component to the SymbolTable hash map. It contains strings to determine the datatype and value of variables in KnightCode as well as an integer 
  * to determine the variable's location in memory and a boolean to keep track of whether or not athe valurable has been set by the user.
+ * It contains a string that indicates the variable type, the value of variable as a string, the bytecode stack memory location indicator and a boolean for whether the value is set or not.
  *
 */
 public class variable{
@@ -85,6 +86,9 @@ public class stacker{
 
 }
 
+	/*
+	 * Here are a bunch of universal variable used throughout the program.
+	 */
 
 	public HashMap<String, variable> SymbolTable = new HashMap<String, variable>();// the SymbolTable hash map is vital to the compiler as it keeps track of all variables
 	public static final String INT = "INTEGER";
@@ -564,6 +568,8 @@ public class stacker{
     	    	operation = "";
     	    	genIntStr = "";
     	    	
+    	    	
+    	    	
     	    	int tempBoolElse = peek(decElseStacker);
 		if(tempBoolElse > 0){
 			int newUsage = peek(decIfStacker);			
@@ -895,7 +901,7 @@ public class stacker{
 
 	/**
 	 * Comparison
-	 *
+	 * The syntax for just plain comparison is really not useful, it would however, if in the future we were to add boolean data types. 
 	 */
 	@Override 
 	public void enterComparison(KnightCodeParser.ComparisonContext ctx){ 

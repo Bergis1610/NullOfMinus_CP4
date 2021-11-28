@@ -31,6 +31,14 @@ import java.util.*;
 public class kcc{
 
 
+ /**
+  * This is the main method where the different components of the antlr4 generated lexer and parsers are first made, 
+  * then it creates a parse tree and calls upon the listener to insert the appropriate code as it enters and exits nodes.
+  * The class is command-line based and should be input with the name of knightcode file and the name of the output file, 
+  * however, it is made with a fail safe that will default to compile program1.kc and output a file called output1. 
+  *
+  **/
+
     public static void main(String[] args){
         CharStream input;
         KnightCodeLexer lexer;
@@ -82,16 +90,5 @@ public class kcc{
 
 
     }
-
-//Scratch
-/*
-
-Trees.inspect(tree, parser);
-            
-System.out.println(tree.toStringTree(parser));
-
-*/
-
-
 
 }//end class
