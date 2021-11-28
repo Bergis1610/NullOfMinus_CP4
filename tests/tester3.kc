@@ -1,83 +1,48 @@
 PROGRAM tester3
 
+
 DECLARE
+	
+	INTEGER bool
 	INTEGER x
 	INTEGER y
 	INTEGER z
-
+	
 BEGIN
 
 
-	SET x := 5
-	SET y := 5
-	
-	
-	
-	
-		IF x = y
-			THEN 
-			
-			#NESTED if count > 1, removes one
-			#count = 2 REMOVES 1
-			#count = 3 REMOVES 1
-			IF 1 = 1 THEN 
-				PRINT "HEY FIRST" 
-				PRINT "HEY AGAIN THERE" 
-				PRINT "BLABLA" 
-			ENDIF
-			
-			#Nested count = 3
-			IF 1 = 1 THEN 
-				PRINT "NOPE2" 
-				PRINT "NOPESTER" 
-			ENDIF
-			
-			#Nested count = 3
-			IF 1 = 1 THEN 
-				PRINT "THIS REMOVES THE THIRD ONE" 
-				PRINT "REMOVED THE THIRD ONE" 
-				PRINT "DOES THIS ONE REMOVE TOO?" 
-			ENDIF
-		
-			#After 3 nested if statements with count >2, removed 3 statements
-			PRINT "Should work"
-			PRINT "last one"
-			PRINT "REMOVED 3 prints wtf" 
-			PRINT "REMOVED 2 prints"
-			PRINT "REMOVED 1 print" 
-			PRINT "Removed no prints, it worked!!"
-			
-			
-			
-			
-			ELSE
-			
-			PRINT "ELSE"
-			
+	PRINT "Do you want to print a nested loop? Type 1 for yes or 0 for no: "
+	READ bool
+
+	IF bool = 1 THEN 
+		SET x := 5
+		WHILE x > 0 DO
+			SET y := 5
+			WHILE y > 0 DO
+				PRINT "y-loop"
+				
 					
-		ENDIF	
-			
-			
-	
-	
-	
-#		IF x = 1 
-#			THEN 
-#			
-#			IF 1 = 1 THEN PRINT "HEY FIRST" ENDIF
-#			
-#			PRINT "HEY" 
-#			PRINT "HEY" 
-#			PRINT "THIS SHOULD BE THEN" 
-#			
-#			ELSE 
-#			
-#			IF 1 = 1 THEN PRINT "BYE FIRST" ENDIF
-#			
-#			PRINT "Bye" 
-#			PRINT "Bye" 
-#			PRINT "THIS SHOULD BE ELSE" 
-#		ENDIF
-	
+				
+				SET y := y-1
+				
+				
+			ENDWHILE	
+			PRINT "	X-LOOP"
 		
+
+			SET x := x-1
+		
+		ENDWHILE
+	ELSE 
+	
+		PRINT "YOU DIDNT WANT THE NESTED LOOP"		
+	ENDIF
+
+
+
+
+
+
+
+
 END
