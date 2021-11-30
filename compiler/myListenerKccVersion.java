@@ -1638,8 +1638,19 @@ public class stacker{
 		if(SymbolTable.containsKey(key2)){
 			genPrint = false;
 			extravar = SymbolTable.get(key2);
-			
 			outputInt = extravar.memLoc;
+			
+			if(!extravar.valueSet){
+			
+				System.out.println("\n\n------------------------------------------");
+				System.out.println("COMPILER ERROR");
+				System.out.println("------------------------------------------");
+				
+				System.out.println("ID: " + key2 + " has not been set.");
+				exit = true;
+				return;
+			}
+			
 			if(isString(extravar)){
 				printString = true;
 			} else { 	
