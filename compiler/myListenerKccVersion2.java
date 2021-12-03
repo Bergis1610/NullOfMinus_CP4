@@ -3010,19 +3010,19 @@ public class stacker{
 				//compString = "IF_ICMPLE"; 
 				//operation = ">"+operation;
 				
-			} else if(decCompSymbol.equals("<")){
+			} else if(loopCompSymbol.equals("<")){
 				
 				mainVisitor.visitJumpInsn(IF_ICMPGE,tempEnd);
 				//compString = "IF_ICMPGE"; 
 				//operation = "<"+operation;
 			
-			} else if(decCompSymbol.equals("<>")){
+			} else if(loopCompSymbol.equals("<>")){
 			
 				mainVisitor.visitJumpInsn(IF_ICMPEQ, tempEnd);
 				//compString = "IF_ICMPEQ";
 				//operation = "<>"+operation;
 			
-			} else if(decCompSymbol.equals("=")){
+			} else if(loopCompSymbol.equals("=")){
 			
 				mainVisitor.visitJumpInsn(IF_ICMPNE, tempEnd);
 				//compString = "IF_ICMPNE";	
