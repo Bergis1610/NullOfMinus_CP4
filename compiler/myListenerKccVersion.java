@@ -2284,14 +2284,14 @@ public class stacker{
 
 				mainVisitor.visitJumpInsn(IF_ICMPLE, tempEnd);
 
-			} else if(decCompSymbol.equals("<")){	
+			} else if(loopCompSymbol.equals("<")){	
 				mainVisitor.visitJumpInsn(IF_ICMPGE,tempEnd);
 			
-			} else if(decCompSymbol.equals("<>")){
+			} else if(loopCompSymbol.equals("<>")){
 			
 				mainVisitor.visitJumpInsn(IF_ICMPEQ, tempEnd);
 			
-			} else if(decCompSymbol.equals("=")){
+			} else if(loopCompSymbol.equals("=")){
 			
 				mainVisitor.visitJumpInsn(IF_ICMPNE, tempEnd);
 			
